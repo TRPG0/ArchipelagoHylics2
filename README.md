@@ -30,6 +30,6 @@ There are a few additional commands that can be used while playing Hylics 2 rand
 - `/deathlink` - Enables or disables DeathLink.
 - `![command]` - Entering any command with an `!` at the beginning allows for remotely sending commands to the server.
 
-# Building from source
+## Building from source
 
-If for any reason you are interested in building the mod from source, you will need a copy of the `ORKFramework.dll` and `ORKFrameworkCore.dll ` files. **These files will not be provided for you and must be acquired on your own.**
+If for any reason you are interested in building the mod from source, you will need a copy of the `ORKFramework.dll` and `ORKFrameworkCore.dll ` files. ***These files will not be provided for you and must be acquired on your own.***
