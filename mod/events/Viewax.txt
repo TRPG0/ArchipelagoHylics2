@@ -1,0 +1,25 @@
+			<10 next="4" >
+				<_bool active="True" overrideNodeName="False" />
+				<_floatarrays>
+					<nodePosition 1178 456 />
+				</_floatarrays>
+				<_string>
+					<nodeName><![CDATA[]]></nodeName>
+					<_type><![CDATA[ShowDialogueStep]]></_type>
+				</_string>
+				<dialogue type="0" guiBoxID="31" actorID="0" portraitType="0" consoleTypeID="0" clipID="0" cancelNext="-1" >
+					<_bool waitClose="True" notificationQueue="True" useSpeaker="True" atActorPosition="False" speakerName="False" speakerPortrait="False" ownPortraitPosition="False" useTitle="False" outputToConsole="False" useAudio="False" stopAudio="True" onSpeaker="False" allowCancel="False" blockAccept="False" afterAudio="False" wait="False" />
+					<_floatarrays>
+						<posOff 0 0 />
+					</_floatarrays>
+					<_string>
+						<posChildName><![CDATA[]]></posChildName>
+						<childName><![CDATA[]]></childName>
+					</_string>
+					<_stringarrays>
+						<message>
+							<0><![CDATA[Got 25 Bones, 5 MEAT, 2 COOKIE, 1 MUSCLE APPLIQUE.]]></0>
+						</message>
+					</_stringarrays>
+				</dialogue>
+			</10>

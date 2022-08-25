@@ -1,0 +1,42 @@
+			<1 nextFail="0" next="2" >
+				<_bool useSelectedData="False" active="True" overrideNodeName="False" />
+				<_floatarrays>
+					<nodePosition 342 38 />
+				</_floatarrays>
+				<_string>
+					<nodeName><![CDATA[]]></nodeName>
+					<_type><![CDATA[HasInInventoryStep]]></_type>
+				</_string>
+				<usedObject type="0" aID="0" wID="0" pID="0" pID2="-1" >
+					<_string>
+						<childName><![CDATA[]]></childName>
+					</_string>
+					<objectKey type="0" >
+						<_string>
+							<value><![CDATA[]]></value>
+						</_string>
+					</objectKey>
+				</usedObject>
+				<_subarrays>
+					<item>
+						<0 type="0" id="55" level="1" >
+							<quantityValue type="0" origin="1" multiVariableUseType="0" formulaID="0" value="1" value2="0" rounding="0" >
+								<_float initialValue="0" offset="0" />
+								<_bool useObject="True" isInt="False" isUTC="False" />
+								<_string>
+									<objectID><![CDATA[]]></objectID>
+									<name><![CDATA[]]></name>
+								</_string>
+							</quantityValue>
+							<chanceValue type="0" origin="1" multiVariableUseType="0" formulaID="0" rounding="0" >
+								<_float initialValue="0" offset="0" value="100" value2="0" />
+								<_bool useObject="True" isInt="False" isUTC="False" />
+								<_string>
+									<objectID><![CDATA[]]></objectID>
+									<name><![CDATA[]]></name>
+								</_string>
+							</chanceValue>
+						</0>
+					</item>
+				</_subarrays>
+			</1>

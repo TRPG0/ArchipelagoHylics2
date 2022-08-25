@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyName>ArchipelagoHylics2</AssemblyName>
+    <Description>Connect to an Archipelago server to play Hylics 2 Randomizer.</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="ORKFramework">
+			<HintPath>lib\ORKFramework.dll</HintPath>
+		</Reference>
+		<Reference Include="ORKFrameworkCore">
+			<HintPath>lib\ORKFrameworkCore.dll</HintPath>
+		</Reference>
+		<Reference Include="Archipelago.MultiClient.Net">
+			<HintPath>lib\Archipelago.MultiClient.Net.dll</HintPath>
+		</Reference>
+		<Reference Include="websocket-sharp">
+			<HintPath>lib\websocket-sharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2017.1.3.5721835" IncludeAssets="compile" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
