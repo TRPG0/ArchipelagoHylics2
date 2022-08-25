@@ -13,7 +13,7 @@ A client for connecting the game Hylics 2 to an Archipelago randomizer.
 
 2. Start Hylics 2 once so that BepInEx can create its required configuration files.
 
-3. Download the latest version of ArchipelagoHylics2 from the [Releases]() page and extract the contents of the zip file into `BepInEx\plugins`.
+3. Download the latest version of ArchipelagoHylics2 from the [Releases](https://github.com/TRPG0/ArchipelagoHylics2/releases) page and extract the contents of the zip file into `BepInEx\plugins`.
 
 4. Start Hylics 2 again. To verify that the mod is working, begin a new game or load a save file, and then open the console. (default key: `/`)
 
