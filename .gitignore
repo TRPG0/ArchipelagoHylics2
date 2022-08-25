@@ -2,8 +2,8 @@
 bin/
 obj/
 xml/
-lib/ORKFramework.dll/
-lib/ORKFrameworkCore.dll/
-*.config/
-*.save/
-*.pdb/
+*.save
+*.pdb
+*.Config
+mod/lib/ORKFramework.dll
+mod/lib/ORKFrameworkCore.dll
