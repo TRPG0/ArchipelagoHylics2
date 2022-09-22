@@ -8,26 +8,19 @@ using Archipelago.MultiClient.Net.Helpers;
 using UnityEngine;
 using ORKFramework;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 namespace ArchipelagoHylics2
 {
     public static class APState
     {
-        public enum State
-        {
-            Menu,
-            InGame
-        }
 
-        public static int[] AP_VERSION = new int[] { 0, 3, 4 };
+        public static int[] AP_VERSION = new int[] { 0, 3, 5 };
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
-        // to add: locations
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
-        public static Dictionary<string, int> archipelago_indexes = new Dictionary<string, int>();
-        public static List<string> message_log = new List<string> { "Hylics 2 | Archipelago | " + APH2Plugin.PluginVersion, 
-            "Available commands: /connect, /disconnect, /popups, /airship, /checked, /deathlink, /help" };
-        public static State state = State.Menu;
+        public static List<string> message_log = new List<string> { "Hylics 2 | Archipelago | " + APH2Plugin.PluginVersion,
+            "Available commands: <color=#00EEEEFF>/connect, /disconnect, /popups, /airship, /checked, /deathlink, /help</color>" };
         public static bool Authenticated;
 
         public static ArchipelagoSession Session;
@@ -66,7 +59,6 @@ namespace ArchipelagoHylics2
             if (loginResult is LoginSuccessful loginSuccess)
             {
                 Authenticated = true;
-                state = State.InGame;
                 Debug.Log("Successfully connected to server!");
 
                 if (loginSuccess.SlotData["party_shuffle"].ToString() == "1")
@@ -76,11 +68,18 @@ namespace ArchipelagoHylics2
                 }
                 if (loginSuccess.SlotData["death_link"].ToString() == "1") ServerData.death_link = true;
                 set_deathlink();
+
+                // send any location checks that may have been completed while disconnected
+                if (ServerData.@checked != null)
+                {
+                    Session.Locations.CompleteLocationChecks(ServerData.@checked.ToArray());
+                }
             }
             else if (loginResult is LoginFailure loginFailure)
             {
                 Authenticated = false;
                 Debug.LogError("Connection Error: " + String.Join("\n", loginFailure.Errors));
+                message_log.Add("Connection Error: " + String.Join("\n", loginFailure.Errors));
                 Session.Socket.Disconnect();
                 Session = null;
             }
@@ -101,24 +100,26 @@ namespace ArchipelagoHylics2
 
                 if (player == ServerData.slot_name) self = true;
 
-                if (type == "THING")
+                if (APH2Plugin.currentScene.name != "Battle Scene")
                 {
-                    APH2Plugin.APRecieveItem(IdentifyItemGetID(name), player, self);
-                    if (name == "PNEUMATOPHORE") ORK.Game.Variables.Set("AirDashBool", true);
-                    if (name == "DOCK KEY") ORK.Game.ActiveGroup.Leader.Inventory.Add(new ItemShortcut(37, 1), false, false, false);
-                }
-                else if (type == "GLOVE") APH2Plugin.APRecieveEquip(IdentifyItemGetID(name), "GLOVE", player, self);
-                else if (type == "ACCESSORY") APH2Plugin.APRecieveEquip(IdentifyItemGetID(name), "ACCESSORY", player, self);
-                else if (type == "GESTURE") APH2Plugin.APRecieveAbility(IdentifyItemGetID(name), player, self);
-                else if (type == "BONES") APH2Plugin.APRecieveMoney(IdentifyItemGetID(name), player, self);
-                else if (type == "PARTY")
-                {
-                    if (APH2Plugin.currentScene.name != "Battle Scene") APH2Plugin.APRecieveParty(name, player, self);
-                    else
+                    if (type == "THING")
                     {
-                        APH2Plugin.queuePartyMember.Add(name);
-                        APH2Plugin.queuePartyPlayer.Add(player);
+                        APH2Plugin.APRecieveItem(IdentifyItemGetID(name), player, self);
+                        if (name == "PNEUMATOPHORE") ORK.Game.Variables.Set("AirDashBool", true);
+                        if (name == "DOCK KEY") ORK.Game.ActiveGroup.Leader.Inventory.Add(new ItemShortcut(37, 1), false, false, false);
                     }
+                    else if (type == "GLOVE") APH2Plugin.APRecieveEquip(IdentifyItemGetID(name), "GLOVE", player, self);
+                    else if (type == "ACCESSORY") APH2Plugin.APRecieveEquip(IdentifyItemGetID(name), "ACCESSORY", player, self);
+                    else if (type == "GESTURE") APH2Plugin.APRecieveAbility(IdentifyItemGetID(name), player, self);
+                    else if (type == "BONES") APH2Plugin.APRecieveMoney(IdentifyItemGetID(name), player, self);
+                    else if (type == "PARTY") APH2Plugin.APRecieveParty(name, player, self);
+                }
+                else
+                {
+                    APH2Plugin.queueItemType.Add(type);
+                    APH2Plugin.queueItemPlayer.Add(player);
+                    if (type == "PARTY") APH2Plugin.queueItemNameOrId.Add(name);
+                    else APH2Plugin.queueItemNameOrId.Add(IdentifyItemGetID(name).ToString());
                 }
 
                 ServerData.index++;
@@ -149,7 +150,6 @@ namespace ArchipelagoHylics2
             }
             Session = null;
             Authenticated = false;
-            state = State.Menu;
         }
 
         public static void DeathLinkReceieved(DeathLink deathLink)
@@ -159,7 +159,16 @@ namespace ArchipelagoHylics2
             {
                 SceneManager.LoadScene("DeathScene", LoadSceneMode.Single);
             }
-            message_log.Add(deathLink.Cause);
+            if (deathLink.Cause != "")
+            {
+                message_log.Add("<color=#FA8072FF>" + deathLink.Cause + "</color>");
+                APH2Plugin.queueMessage.Add(deathLink.Cause);
+            }
+            else
+            {
+                message_log.Add("<color=#FA8072FF>" + deathLink.Source + " has perished, and so have you.</color>");
+                APH2Plugin.queueMessage.Add(deathLink.Source + " has perished, and so have you.");
+            }
         }
 
         public static void Session_PacketRecieved(ArchipelagoPacketBase packet)
@@ -177,7 +186,9 @@ namespace ArchipelagoHylics2
                     {
                         var p = packet as PrintJsonPacket;
                         string text = "";
-                        // setup in-game message a location has an item for a different player
+                        string color = "<color=#FFFFFFFF>";
+
+                        // setup in-game message if a location has an item for a different player
                         if (p.Data[0].Type == JsonMessagePartType.PlayerId && Session.Players.GetPlayerName(int.Parse(p.Data[0].Text)) == ServerData.slot_name && p.Data[1].Text == " sent ")
                         {
                             APH2Plugin.queueMessage.Add("Found " + Session.Items.GetItemName(long.Parse(p.Data[2].Text)) + " for " + Session.Players.GetPlayerAlias(int.Parse(p.Data[4].Text)) + ".");
@@ -185,24 +196,26 @@ namespace ArchipelagoHylics2
 
                         foreach (var messagePart in p.Data)
                         {
-                            //message_log.Add(messagePart.Player.ToString() + messagePart.Type.ToString() + messagePart.Text);
-
                             switch (messagePart.Type)
                             {
                                 case JsonMessagePartType.PlayerId:
+                                    if (Session.Players.GetPlayerName(int.Parse(messagePart.Text)) == ServerData.slot_name) color = "<color=#EE00EEFF>";
+                                    else color = "<color=#FAFAD2FF>";
                                     text += int.TryParse(messagePart.Text, out var playerSlot)
-                                        ? Session.Players.GetPlayerAlias(playerSlot) ?? $"Slot: {playerSlot}"
-                                        : messagePart.Text;
+                                        ? color + Session.Players.GetPlayerAlias(playerSlot) + "</color>" ?? $"{color}Slot: {playerSlot}</color>"
+                                        : $"{color}{messagePart.Text}</color>";
                                     break;
                                 case JsonMessagePartType.ItemId:
+                                    color = ItemFlagsToRGBA(messagePart.Flags);
                                     text += int.TryParse(messagePart.Text, out var itemId)
-                                        ? Session.Items.GetItemName(itemId) ?? $"Item: {itemId}"
-                                        : messagePart.Text;
+                                        ? color + Session.Items.GetItemName(itemId) + "</color>" ?? $"{color}Item: {itemId}</color>"
+                                        : $"{color}{messagePart.Text}</color>";
                                     break;
                                 case JsonMessagePartType.LocationId:
+                                    color = "<color=#00FF7FFF>";
                                     text += int.TryParse(messagePart.Text, out var locationId)
-                                        ? Session.Locations.GetLocationNameFromId(locationId) ?? $"Location: {locationId}"
-                                        : messagePart.Text;
+                                        ? color + Session.Locations.GetLocationNameFromId(locationId) + "</color>" ?? $"{color}Location: {locationId}</color>"
+                                        : $"{color}{messagePart.Text}</color>";
                                     break;
                                 default:
                                     text += messagePart.Text;
@@ -212,6 +225,21 @@ namespace ArchipelagoHylics2
                         message_log.Add(text);
                         break;
                     }
+            }
+        }
+
+        public static string ItemFlagsToRGBA(ItemFlags? flags)
+        {
+            switch (flags)
+            {
+                case ItemFlags.Advancement:
+                    return "<color=#AF99EFFF>";
+                case ItemFlags.NeverExclude: // useful
+                    return "<color=#6D8BE8FF>";
+                case ItemFlags.Trap:
+                    return "<color=#FA8072FF>";
+                default:
+                    return "<color=#00EEEEFF>";
             }
         }
 
