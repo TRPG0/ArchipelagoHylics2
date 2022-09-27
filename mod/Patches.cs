@@ -98,6 +98,7 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200627);
                     APState.ServerData.@checked.Add(200627);
                     APState.ServerData.checked_waynehouse++;
+                    Debug.Log("Sending location check: 200627");
                     break;
 
                 case "CaveMinerJuiceSpeechEvent": // Give Juice to Cave Miner
@@ -106,6 +107,7 @@ namespace ArchipelagoHylics2
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200638);
                         APState.ServerData.@checked.Add(200638);
                         APState.ServerData.checked_new_muldul++;
+                        Debug.Log("Sending location check: 200638");
                     }
                     break;
 
@@ -113,23 +115,27 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200642);
                     APState.ServerData.@checked.Add(200642);
                     APState.ServerData.checked_new_muldul++;
+                    Debug.Log("Sending location check: 200642");
                     break;
 
                 case "Learn_Nematode_Event": // Drill Castle TV
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200712);
                     APState.ServerData.@checked.Add(200712);
                     APState.ServerData.checked_drill_castle++;
+                    Debug.Log("Sending location check: 200712");
                     break;
 
                 case "Dedusmuln_Join_Event": // Talk to Dedusmuln in Viewax's Edifice
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200653);
                     APState.ServerData.@checked.Add(200653);
                     APState.ServerData.checked_viewaxs_edifice++;
+                    Debug.Log("Sending location check: 200653");
                     if (APState.ServerData.party_shuffle)
                     {
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200654);
                         APState.ServerData.@checked.Add(200654);
                         APState.ServerData.checked_viewaxs_edifice++;
+                        Debug.Log("Sending location check: 200654");
                     }
                     break;
 
@@ -138,6 +144,7 @@ namespace ArchipelagoHylics2
                     APState.ServerData.@checked.Add(200662);
                     APState.ServerData.@checked.Add(200663);
                     APState.ServerData.checked_viewaxs_edifice += 2;
+                    Debug.Log("Sending location check: 200662, 200663");
                     break;
 
                 case "BanditFort_Boss_DialogueEvent": // Defeat Viewax
@@ -148,12 +155,14 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200665);
                     APState.ServerData.@checked.Add(200665);
                     APState.ServerData.checked_viewaxs_edifice++;
+                    Debug.Log("Sending location check: 200665");
                     break;
 
                 case "LearnTimeSigil": // Viewax's Edifice TV
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200666);
                     APState.ServerData.@checked.Add(200666);
                     APState.ServerData.checked_viewaxs_edifice++;
+                    Debug.Log("Sending location check: 200666");
                     break;
 
                 case "KingDialogue_Revamp_Event": // Speak to Blerol after rescuing him from Viewax's jail
@@ -162,12 +171,14 @@ namespace ArchipelagoHylics2
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200645);
                         APState.ServerData.@checked.Add(200645);
                         APState.ServerData.checked_blerol1 = 1;
+                        Debug.Log("Sending location check: 200645");
                     }
                     else if (ORK.Game.Variables.GetFloat("SpokeXTimesAfterBandits") == 4)
                     {
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200646);
                         APState.ServerData.@checked.Add(200646);
                         APState.ServerData.checked_blerol2 = 1;
+                        Debug.Log("Sending location check: 200646");
                     }
                     break;
 
@@ -175,29 +186,34 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200645, 200646);
                     if (!APState.ServerData.@checked.Contains(200645)) APState.ServerData.@checked.Add(200645);
                     if (!APState.ServerData.@checked.Contains(200646)) APState.ServerData.@checked.Add(200646);
+                    Debug.Log("Sending location check: 200645, 200646");
                     break;
 
                 case "LearnCharge_Event": // TV Island TV
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200683);
                     APState.ServerData.@checked.Add(200683);
                     APState.ServerData.checked_tv_island++;
+                    Debug.Log("Sending location check: 200683");
                     break;
 
                 case "Farmer_Gift_Event": // Talk to Farmer in Juice Ranch
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200687);
                     APState.ServerData.@checked.Add(200687);
                     APState.ServerData.checked_juice_ranch++;
+                    Debug.Log("Sending location check: 200687");
                     break;
 
                 case "SomsnosaHouse_PostBattle_AutoRunEvent": // Finish battle with Somsnosa
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200688);
                     APState.ServerData.@checked.Add(200688);
                     APState.ServerData.checked_juice_ranch++;
+                    Debug.Log("Sending location check: 200688");
                     if (APState.ServerData.party_shuffle)
                     {
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200689);
                         APState.ServerData.@checked.Add(200689);
                         APState.ServerData.checked_juice_ranch++;
+                        Debug.Log("Sending location check: 200689");
                     }
                     break;
 
@@ -207,6 +223,7 @@ namespace ArchipelagoHylics2
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200675);
                         APState.ServerData.@checked.Add(200675);
                         APState.ServerData.checked_airship = 1;
+                        Debug.Log("Sending location check: 200675");
                     }
                     break;
 
@@ -214,12 +231,14 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200691);
                     APState.ServerData.@checked.Add(200691);
                     APState.ServerData.checked_juice_ranch++;
+                    Debug.Log("Sending location check: 200691");
                     break;
 
                 case "LearnTeledenudate": // Afterlife TV
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200631);
                     APState.ServerData.@checked.Add(200631);
                     APState.ServerData.checked_afterlife++;
+                    Debug.Log("Sending location check: 200631");
                     break;
 
                 case "ClickerSellerEvent": // Buy Clicker for Foglast TV
@@ -228,6 +247,7 @@ namespace ArchipelagoHylics2
                         if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200696);
                         APState.ServerData.@checked.Add(200696);
                         APState.ServerData.checked_foglast++;
+                    Debug.Log("Sending location check: 200696");
                     }
                     break;
 
@@ -235,6 +255,7 @@ namespace ArchipelagoHylics2
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200697);
                     APState.ServerData.@checked.Add(200697);
                     APState.ServerData.checked_foglast++;
+                    Debug.Log("Sending location check: 200697");
                     break;
 
                 case "FoglastSageEvent": // Talk to Sage in Foglast
@@ -242,6 +263,7 @@ namespace ArchipelagoHylics2
                     APState.ServerData.@checked.Add(200705);
                     APState.ServerData.@checked.Add(200706);
                     APState.ServerData.checked_foglast += 2;
+                    Debug.Log("Sending location check: 200705, 200706");
                     break;
 
                 case "ThirdSage_Event": // Talk to Sage in Sage Labyrinth
@@ -249,12 +271,14 @@ namespace ArchipelagoHylics2
                     APState.ServerData.@checked.Add(200726);
                     APState.ServerData.@checked.Add(200727);
                     APState.ServerData.checked_sage_labyrinth += 2;
+                    Debug.Log("Sending location check: 200726, 200727");
                     break;
 
                 case "LearnSageSpell_Event": // Sage Airship TV
                     if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200735);
                     APState.ServerData.@checked.Add(200735);
                     APState.ServerData.checked_sage_airship++;
+                    Debug.Log("Sending location check: 200735");
                     break;
 
                 default:
@@ -275,10 +299,12 @@ namespace ArchipelagoHylics2
                 {
                     APState.Session.Locations.CompleteLocationChecks(200643);
                     APState.ServerData.checked_pongorma = 1;
+                    Debug.Log("Sending location check: 200643");
                     if (APState.ServerData.party_shuffle)
                     {
                         APState.Session.Locations.CompleteLocationChecks(200644);
                         APState.ServerData.checked_pongorma = 2;
+                        Debug.Log("Sending location check: 200644");
                     }
                 }
             }
