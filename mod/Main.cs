@@ -65,7 +65,6 @@ namespace ArchipelagoHylics2
                                            "true",
                                            "Decide whether or not to show in-game messages when an item is found or recieved.");
 
-            /*
             if (bool.TryParse(configPauseControl.Value, out bool cfg1))
             {
                 pauseControl = cfg1;
@@ -75,7 +74,6 @@ namespace ArchipelagoHylics2
                 Logger.LogError("Couldn't parse config setting \"PauseControl\". Default value of \"false\" will be used instead.");
                 pauseControl = false;
             }
-            */
             pauseControl = false;
 
             if (bool.TryParse(configShowPopups.Value, out bool cfg2))
