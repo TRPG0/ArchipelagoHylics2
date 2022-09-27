@@ -9,6 +9,7 @@ using UnityEngine;
 using ORKFramework;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using ORKFramework.Behaviours;
 
 namespace ArchipelagoHylics2
 {
@@ -64,7 +65,61 @@ namespace ArchipelagoHylics2
                 if (loginSuccess.SlotData["party_shuffle"].ToString() == "1")
                 {
                     ServerData.party_shuffle = true;
-                    APH2Plugin.ReloadEvents();
+                    if (APH2Plugin.currentScene.name == "Town_VaultOnly" || APH2Plugin.currentScene.name == "BanditFort_Scene" || APH2Plugin.currentScene.name == "SomsnosaHouse_Scene")
+                    {
+                        APH2Plugin.ReloadEvents();
+                    }
+                }
+                if (loginSuccess.SlotData["medallion_shuffle"].ToString() == "1")
+                {
+                    ServerData.medallion_shuffle = true;
+                    if (APH2Plugin.currentScene.name == "Town_Scene_WithAdditions" || APH2Plugin.currentScene.name == "Town_VaultOnly" || APH2Plugin.currentScene.name == "BanditFort_Scene" ||
+                        APH2Plugin.currentScene.name == "LD44 Scene" || APH2Plugin.currentScene.name == "LD44_ChibiScene2_TheCarpetScene" || APH2Plugin.currentScene.name == "Foglast_Exterior_Dry" ||
+                        APH2Plugin.currentScene.name == "BigAirship_Scene" || APH2Plugin.currentScene.name == "FlyingPalaceDungeon_Scene")
+                    {
+                        APH2Plugin.ReloadEvents();
+                    }
+                }
+                if (loginSuccess.SlotData["random_start"].ToString() == "1")
+                {
+                    ServerData.random_start = true;
+                    ServerData.start_location = loginSuccess.SlotData["start_location"].ToString();
+
+                    if ((ServerData.checked_waynehouse + ServerData.checked_afterlife + ServerData.checked_new_muldul + ServerData.checked_new_muldul_vault + 
+                        ServerData.checked_pongorma + ServerData.checked_blerol1 + ServerData.checked_blerol2 + ServerData.checked_viewaxs_edifice + 
+                        ServerData.checked_arcade1 + ServerData.checked_airship + ServerData.checked_arcade_island + ServerData.checked_arcade2 + 
+                        ServerData.checked_tv_island + ServerData.checked_juice_ranch + ServerData.checked_worm_pod + ServerData.checked_foglast + 
+                        ServerData.checked_drill_castle + ServerData.checked_sage_labyrinth + ServerData.checked_sage_airship + ServerData.checked_hylemxylem) == 0 
+                        && ServerData.start_location != "Waynehouse")
+                    {
+                        GameObject gameObject = new("Changer");
+                        SceneChanger changer = gameObject.AddComponent<SceneChanger>();
+                        SceneTarget target = new();
+                        target.spawnID = 9;
+
+                        if (ServerData.start_location == "Viewax's Edifice")
+                        {
+                            ORK.Game.Variables.Set("Warp3_Fort", true);
+                            target.sceneName = "BanditFort_Scene";
+                            changer.target = new[] { target };
+                            changer.StartEvent(gameObject);
+                        }
+                        else if (ServerData.start_location == "TV Island")
+                        {
+                            ORK.Game.Variables.Set("Warp60_BigTV", true);
+                            target.sceneName = "BigTV_Island_Scene";
+                            changer.target = new[] { target };
+                            changer.StartEvent(gameObject);
+                        }
+                        else if (ServerData.start_location == "Shield Facility")
+                        {
+                            ORK.Game.Variables.Set("Warp100_WormHouse", true);
+                            target.sceneName = "WormRoom_Scene";
+                            changer.target = new[] { target };
+                            changer.StartEvent(gameObject);
+                        }
+                        ServerData.visited_waynehouse = false;
+                    }
                 }
                 if (loginSuccess.SlotData["death_link"].ToString() == "1") ServerData.death_link = true;
                 set_deathlink();
@@ -157,7 +212,7 @@ namespace ArchipelagoHylics2
             DeathLinkKilling = true;
             if (!APH2Plugin.cutscenes.Contains(APH2Plugin.currentScene.name) && APH2Plugin.currentScene.name != "Battle Scene")
             {
-                SceneManager.LoadScene("DeathScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("DeathScene");
             }
             if (deathLink.Cause != "")
             {
@@ -189,7 +244,7 @@ namespace ArchipelagoHylics2
                         string color = "<color=#FFFFFFFF>";
 
                         // setup in-game message if a location has an item for a different player
-                        if (p.Data[0].Type == JsonMessagePartType.PlayerId && Session.Players.GetPlayerName(int.Parse(p.Data[0].Text)) == ServerData.slot_name && p.Data[1].Text == " sent ")
+                        if (p.Data[0].Type == JsonMessagePartType.PlayerId && Session.Players.GetPlayerName(int.Parse(p.Data[0].Text)) == ServerData.slot_name && p.Data[1].Text == " sent " && APH2Plugin.showPopups)
                         {
                             APH2Plugin.queueMessage.Add("Found " + Session.Items.GetItemName(long.Parse(p.Data[2].Text)) + " for " + Session.Players.GetPlayerAlias(int.Parse(p.Data[4].Text)) + ".");
                         }
@@ -321,6 +376,9 @@ namespace ArchipelagoHylics2
                             return 200640;
                         case 84:
                             return 200641;
+                        case 48:
+                            if (ServerData.medallion_shuffle) return 200755;
+                            else return null;
                         default:
                             return null;
                     }
@@ -333,6 +391,21 @@ namespace ArchipelagoHylics2
                             return 200648;
                         case 414:
                             return 200649;
+                        case 370:
+                            if (ServerData.medallion_shuffle) return 200756;
+                            else return null;
+                        case 227:
+                            if (ServerData.medallion_shuffle) return 200757;
+                            else return null;
+                        case 134:
+                            if (ServerData.medallion_shuffle) return 200758;
+                            else return null;
+                        case 182:
+                            if (ServerData.medallion_shuffle) return 200759;
+                            else return null;
+                        case 222:
+                            if (ServerData.medallion_shuffle) return 200760;
+                            else return null;
                         default:
                             return null;
                     }
@@ -361,6 +434,15 @@ namespace ArchipelagoHylics2
                             return 200661;
                         case 120:
                             return 200664;
+                        case 3:
+                            if (ServerData.medallion_shuffle) return 200761;
+                            else return null;
+                        case 53:
+                            if (ServerData.medallion_shuffle) return 200762;
+                            else return null;
+                        case 0:
+                            if (ServerData.medallion_shuffle) return 200763;
+                            else return null;
                         default:
                             return null;
                     }
@@ -383,6 +465,15 @@ namespace ArchipelagoHylics2
                             return 200673;
                         case 117:
                             return 200674;
+                        case 88:
+                            if (ServerData.medallion_shuffle) return 200764;
+                            else return null;
+                        case 155:
+                            if (ServerData.medallion_shuffle) return 200765;
+                            else return null;
+                        case 144:
+                            if (ServerData.medallion_shuffle) return 200766;
+                            else return null;
                         default:
                             return null;
                     }
@@ -410,6 +501,21 @@ namespace ArchipelagoHylics2
                             return 200681;
                         case 1002:
                             return 200682;
+                        case 165:
+                            if (ServerData.medallion_shuffle) return 200767;
+                            else return null;
+                        case 101:
+                            if (ServerData.medallion_shuffle) return 200768;
+                            else return null;
+                        case 140:
+                            if (ServerData.medallion_shuffle) return 200769;
+                            else return null;
+                        case 44:
+                            if (ServerData.medallion_shuffle) return 200770;
+                            else return null;
+                        case 76:
+                            if (ServerData.medallion_shuffle) return 200771;
+                            else return null;
                         default:
                             return null;
                     }
@@ -457,6 +563,15 @@ namespace ArchipelagoHylics2
                             return 200702;
                         case 0:
                             return 200703;
+                        case 98:
+                            if (ServerData.medallion_shuffle) return 200772;
+                            else return null;
+                        case 194:
+                            if (ServerData.medallion_shuffle) return 200773;
+                            else return null;
+                        case 153:
+                            if (ServerData.medallion_shuffle) return 200774;
+                            else return null;
                         default:
                             return null;
                     }
@@ -542,6 +657,24 @@ namespace ArchipelagoHylics2
                             return 200733;
                         case 29:
                             return 200734;
+                        case 24:
+                            if (ServerData.medallion_shuffle) return 200775;
+                            else return null;
+                        case 28:
+                            if (ServerData.medallion_shuffle) return 200776;
+                            else return null;
+                        case 25:
+                            if (ServerData.medallion_shuffle) return 200777;
+                            else return null;
+                        case 17:
+                            if (ServerData.medallion_shuffle) return 200778;
+                            else return null;
+                        case 18:
+                            if (ServerData.medallion_shuffle) return 200779;
+                            else return null;
+                        case 19:
+                            if (ServerData.medallion_shuffle) return 200780;
+                            else return null;
                         default:
                             return null;
                     }
@@ -584,6 +717,18 @@ namespace ArchipelagoHylics2
                             return 200752;
                         case 212:
                             return 200753;
+                        case 138:
+                            if (ServerData.medallion_shuffle) return 200781;
+                            else return null;
+                        case 132:
+                            if (ServerData.medallion_shuffle) return 200782;
+                            else return null;
+                        case 140:
+                            if (ServerData.medallion_shuffle) return 200783;
+                            else return null;
+                        case 270:
+                            if (ServerData.medallion_shuffle) return 200784;
+                            else return null;
                         default:
                             return null;
                     }
@@ -734,6 +879,8 @@ namespace ArchipelagoHylics2
                     return 100;
                 case "50 Bones":
                     return 50;
+                case "10 Bones":
+                    return 10;
 
                 default: return 0;
             }

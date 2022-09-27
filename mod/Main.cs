@@ -11,7 +11,6 @@ using System.IO;
 using Archipelago.MultiClient.Net.Packets;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using System;
-using System.Reflection;
 
 namespace ArchipelagoHylics2
 {
@@ -36,7 +35,6 @@ namespace ArchipelagoHylics2
         RectOffset consolePadding = new();
         Texture2D consoleBG = new(1, 1);
 
-        private bool checkedBattle;
         public static List<string> cutscenes = new() { "StartScene", "FirstCutscene", "DeathScene", "SarcophagousDig_Cutscene", "ShieldDown_Cutscene", "SarcophagousCutscene",
             "Hylemxylem_Cutscene", "Cutscene_Drill_SkullBomb", "SpaceshipRising_Cutscene", "Hylemxylem_Explode_Cutscene", "SomsnosaGolfScene" };
         public static List<string> deathMessage = new() { " has perished.", "'s flesh has melted away.", " didn't have enough meat to survive.", " has entered the afterlife.", " was overpowered by Gibby's minions." };
@@ -49,7 +47,6 @@ namespace ArchipelagoHylics2
         public static List<string> queueItemPlayer = new();
 
         public static Scene currentScene;
-
         void Awake()
         {
             Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
@@ -68,7 +65,7 @@ namespace ArchipelagoHylics2
                                            "true",
                                            "Decide whether or not to show in-game messages when an item is found or recieved.");
 
-
+            /*
             if (bool.TryParse(configPauseControl.Value, out bool cfg1))
             {
                 pauseControl = cfg1;
@@ -78,6 +75,7 @@ namespace ArchipelagoHylics2
                 Logger.LogError("Couldn't parse config setting \"PauseControl\". Default value of \"false\" will be used instead.");
                 pauseControl = false;
             }
+            */
             pauseControl = false;
 
             if (bool.TryParse(configShowPopups.Value, out bool cfg2))
@@ -302,25 +300,6 @@ namespace ArchipelagoHylics2
                 StartCoroutine(APShow());
             }
 
-            // if current battle is Viewax boss fight, remove his loot
-            if (currentScene.name == "Battle Scene" && !checkedBattle)
-            {
-                GameObject[] objectList = FindObjectsOfType<GameObject>();
-                foreach (GameObject obj in objectList)
-                {
-                    CombatantComponent enemy = obj.GetComponent(typeof(CombatantComponent)) as CombatantComponent;
-                    if (enemy != null && obj.name == "Viewax")
-                    {
-                        enemy.combatant.Setting.lootID = new int[0];
-                        checkedBattle = true;
-                    }
-                    else
-                    {
-                        checkedBattle = true;
-                    }
-                }
-            }
-
             // kill the party members if deathlink is enabled
             if (currentScene.name == "Battle Scene" && APState.DeathLinkKilling) 
             {
@@ -461,7 +440,7 @@ namespace ArchipelagoHylics2
                         if (showPopups)
                         {
                             showPopups = false;
-                            APState.message_log.Add("Popups have been <color=#EE0000FF>disabled.</color>");
+                            APState.message_log.Add("Popups have been <color=#FA8072FF>disabled.</color>");
                             queueMessage.Clear();
                             consoleCommand = "";
                         }
@@ -485,12 +464,12 @@ namespace ArchipelagoHylics2
                     {
                         if (currentScene.name != "World_Map_Scene")
                         {
-                            APState.message_log.Add("<color=#EE0000FF>Denied.</color> Can't summon airship here.");
+                            APState.message_log.Add("<color=#FA8072FF>Denied.</color> Can't summon airship here.");
                             consoleCommand = "";
                         }
                         else if (!ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(23, 1)))
                         {
-                            APState.message_log.Add("<color=#EE0000FF>Denied.</color> You don't have DOCK KEY.");
+                            APState.message_log.Add("<color=#FA8072FF>Denied.</color> You don't have DOCK KEY.");
                             consoleCommand = "";
                         }
                         else
@@ -500,7 +479,7 @@ namespace ArchipelagoHylics2
                             {
                                 if (obj.name == "AirshipModel_Prefab" || obj.name == "AirshipModel_Prefab(Clone)")
                                 {
-                                    obj.transform.SetPositionAndRotation(new Vector3(-23.71f, 16.225f, -57.12f), obj.transform.rotation);
+                                    obj.transform.SetPositionAndRotation(new Vector3(-23.71f, 16.225f, -57.12f), new Quaternion(0, 0.3827f, 0, 0.9239f));
                                     ORK.Game.ActiveGroup.Leader.GameObject.transform.SetPositionAndRotation(new Vector3(-24.3298f, 16f, -57.7844f), ORK.Game.ActiveGroup.Leader.GameObject.transform.rotation);
                                 }
                             }
@@ -523,7 +502,7 @@ namespace ArchipelagoHylics2
                         APState.set_deathlink();
 
                         if (APState.ServerData.death_link) APState.message_log.Add("DeathLink is now <color=#00FF7FFF>enabled.</color>");
-                        else APState.message_log.Add("DeathLink is now <color=#EE0000FF>disabled.</color>");
+                        else APState.message_log.Add("DeathLink is now <color=#FA8072FF>disabled.</color>");
                         consoleCommand = "";
                     }
                 }
@@ -531,6 +510,8 @@ namespace ArchipelagoHylics2
                 else if (consoleCommand.StartsWith("/checked"))
                 {
                     string region;
+                    int total;
+                    int total2;
                     if (consoleCommand.Contains(" "))
                     {
                         var array = consoleCommand.Split(new[] { ' ' }, 2);
@@ -545,26 +526,44 @@ namespace ArchipelagoHylics2
                         case "wayne house":
                         case "spawn":
                         case "start":
+                            total = 6;
                             APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_waynehouse.ToString() + 
-                                "</color>/6 locations in the <color=#00FF7FFF>Waynehouse.</color>");
+                                "</color>/" + total.ToString() + " locations in the <color=#00FF7FFF>Waynehouse.</color>");
                             break;
                         case "afterlife_island":
                         case "afterlife":
+                            total = 4;
                             APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_afterlife.ToString() + 
-                                "</color>/4 locations in the <color=#00FF7FFF>Afterlife.</color>");
+                                "</color>/" + total.ToString() + " locations in the <color=#00FF7FFF>Afterlife.</color>");
                             break;
                         case "town_scene_withadditions":
                         case "town_vaultonly":
                         case "new muldul":
                         case "new muldul vault":
-                            if (APState.ServerData.party_shuffle) APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_new_muldul.ToString() + 
-                                "</color>/11 locations in <color=#00FF7FFF>New Muldul</color> and <color=#00FF7FFF>" + 
-                                (APState.ServerData.checked_new_muldul_vault + APState.ServerData.checked_blerol1 + APState.ServerData.checked_blerol2 + APState.ServerData.checked_pongorma).ToString() + 
-                                "</color>/7 locations in the <color=#00FF7FFF>New Muldul Vault.</color>");
-                            else APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_new_muldul.ToString() + 
-                                "</color>/11 locations in <color=#00FF7FFF>New Muldul</color> and <color=#00FF7FFF>" +
-                                (APState.ServerData.checked_new_muldul_vault + APState.ServerData.checked_blerol1 + APState.ServerData.checked_blerol2 + APState.ServerData.checked_pongorma).ToString() + 
-                                "</color>/6 locations in the <color=#00FF7FFF>New Muldul Vault.</color>");
+                            if (APState.ServerData.party_shuffle && APState.ServerData.medallion_shuffle)
+                            {
+                                total = 12;
+                                total2 = 12;
+                            }
+                            else if (APState.ServerData.medallion_shuffle)
+                            {
+                                total = 12;
+                                total2 = 11;
+                            }
+                            else if (APState.ServerData.party_shuffle)
+                            {
+                                total = 11;
+                                total2 = 17;
+                            }
+                            else
+                            {
+                                total = 11;
+                                total2 = 6;
+                            }
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_new_muldul.ToString() +
+                                "</color>/" + total.ToString() + " locations in <color=#00FF7FFF>New Muldul</color> and <color=#00FF7FFF>" +
+                                (APState.ServerData.checked_new_muldul_vault + APState.ServerData.checked_blerol1 + APState.ServerData.checked_blerol2 + APState.ServerData.checked_pongorma).ToString() +
+                                "</color>/" + total2.ToString() + " locations in the <color=#00FF7FFF>New Muldul Vault.</color>");
                             break;
                         case "banditfort_scene":
                         case "ld44 scene":
@@ -572,64 +571,104 @@ namespace ArchipelagoHylics2
                         case "viewaxs edifice":
                         case "viewax":
                         case "arcade 1":
-                            if (APState.ServerData.party_shuffle) APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_viewaxs_edifice.ToString() + 
-                                "</color>/17 locations in <color=#00FF7FFF>Viewax's Edifice</color> and <color=#00FF7FFF>" + APState.ServerData.checked_arcade1.ToString() + 
-                                "</color>/8 locations in <color=#00FF7FFF>Arcade 1.</color>");
-                            else APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_viewaxs_edifice.ToString() + 
-                                "</color>/16 locations in <color=#00FF7FFF>Viewax's Edifice</color> and <color=#00FF7FFF>" + APState.ServerData.checked_arcade1.ToString() + 
-                                "</color>/8 locations in <color=#00FF7FFF>Arcade 1.</color>");
+                            if (APState.ServerData.party_shuffle && APState.ServerData.medallion_shuffle)
+                            {
+                                total = 20;
+                                total2 = 11;
+                            }
+                            else if (APState.ServerData.medallion_shuffle)
+                            {
+                                total = 19;
+                                total2 = 11;
+                            }
+                            else if (APState.ServerData.party_shuffle)
+                            {
+                                total = 17;
+                                total2 = 8;
+                            }
+                            else
+                            {
+                                total = 16;
+                                total2 = 8;
+                            }
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_viewaxs_edifice.ToString() + 
+                                "</color>/" + total.ToString() + " locations in <color=#00FF7FFF>Viewax's Edifice</color> and <color=#00FF7FFF>" + APState.ServerData.checked_arcade1.ToString() + 
+                                "</color>/" + total2.ToString() + " locations in <color=#00FF7FFF>Arcade 1.</color>");
                             break;
                         case "airship_scene":
                         case "airship":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_airship.ToString() + "</color>/1 locations in the <color=#00FF7FFF>Airship.</color>");
+                            total = 1;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_airship.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Airship.</color>");
                             break;
                         case "secondarcade_scene":
                         case "ld44_chibiscene2_thecarpetscene":
                         case "arcade island":
                         case "arcade 2":
+                            total = 1;
+                            if (APState.ServerData.medallion_shuffle) total2 = 11;
+                            else total2 = 6;
                             APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_arcade_island.ToString() + 
-                                "</color>/1 locations in <color=#00FF7FFF>Arcade Island</color> and <color=#00FF7FFF>" + APState.ServerData.checked_arcade2.ToString() + 
-                                "</color>/6 locations in <color=#00FF7FFF>Arcade 2.</color>");
+                                "</color>/" + total.ToString() + " locations in <color=#00FF7FFF>Arcade Island</color> and <color=#00FF7FFF>" + APState.ServerData.checked_arcade2.ToString() + 
+                                "</color>/" + total2.ToString() + " locations in <color=#00FF7FFF>Arcade 2.</color>");
                             break;
                         case "bigtv_island_scene":
                         case "tv island":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_tv_island.ToString() + "</color>/1 locations in <color=#00FF7FFF>TV Island.</color>");
+                            total = 1;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_tv_island.ToString() + "</color>/" + total.ToString() + 
+                                " locations in <color=#00FF7FFF>TV Island.</color>");
                             break;
                         case "somsnosahouse_scene":
                         case "juice ranch":
                         case "somsnosa's house":
                         case "somsnosas house":
-                            if (APState.ServerData.party_shuffle) APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_juice_ranch.ToString() + 
-                                "</color>/8 locations in the <color=#00FF7FFF>Juice Ranch.</color>");
-                            else APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_juice_ranch.ToString() + "</color>/7 locations in the <color=#00FF7FFF>Juice Ranch.</color>");
+                            if (APState.ServerData.party_shuffle) total = 8;
+                            else total = 7;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_juice_ranch.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Juice Ranch.</color>");
                             break;
                         case "mazescene1":
                         case "worm pod":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_worm_pod.ToString() + "</color>/1 locations in the <color=#00FF7FFF>Worm Pod.</color>");
+                            total = 1;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_worm_pod.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Worm Pod.</color>");
                             break;
                         case "foglast_exterior_dry":
                         case "foglast":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_foglast.ToString() + "</color>/14 locations in <color=#00FF7FFF>Foglast.</color>");
+                            if (APState.ServerData.medallion_shuffle) total = 17;
+                            else total = 14;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_foglast.ToString() + "</color>/" + total.ToString() + 
+                                " locations in <color=#00FF7FFF>Foglast.</color>");
                             break;
                         case "drillcastle":
                         case "drill castle":
                         case "dig site":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_drill_castle.ToString() + "</color>/6 locations in the <color=#00FF7FFF>Drill Castle.</color>");
+                            total = 6;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_drill_castle.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Drill Castle.</color>");
                             break;
                         case "dungeon_labyrinth_scene_final":
                         case "sage labyrinth":
                         case "sage maze":
                         case "skull bomb maze":
                         case "skull bomb labyrinth":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_sage_labyrinth.ToString() + "</color>/20 locations in the <color=#00FF7FFF>Sage Labyrinth.</color>");
+                            total = 20;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_sage_labyrinth.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Sage Labyrinth.</color>");
                             break;
                         case "bigairship_scene":
                         case "sage airship":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_sage_airship.ToString() + "</color>/4 locations in the <color=#00FF7FFF>Sage Airship.</color>");
+                            if (APState.ServerData.medallion_shuffle) total = 10;
+                            else total = 4;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_sage_airship.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Sage Airship.</color>");
                             break;
                         case "flyingpalacedungeon_scene":
                         case "hylemxylem":
-                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_hylemxylem.ToString() + "</color>/18 locations in the <color=#00FF7FFF>Hylemxylem.</color>");
+                            if (APState.ServerData.medallion_shuffle) total = 22;
+                            else total = 18;
+                            APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_hylemxylem.ToString() + "</color>/" + total.ToString() + 
+                                " locations in the <color=#00FF7FFF>Hylemxylem.</color>");
                             break;
                         case "world_map_scene":
                         case "world":
@@ -712,25 +751,6 @@ namespace ArchipelagoHylics2
                         consoleCommand = "";
                     }
                 }
-                /*
-                // send message to server
-                else if (consoleCommand.StartsWith("!"))
-                {
-                    if (!APState.Authenticated)
-                    {
-                        APState.message_log.Add("You aren't connected to an Archipelago server.");
-                        consoleCommand = "";
-                    }
-                    else
-                    {
-                        string text = consoleCommand;
-                        var packet = new SayPacket();
-                        packet.Text = text;
-                        APState.Session.Socket.SendPacket(packet);
-                        consoleCommand = "";
-                    }
-                }
-                */
                 // send message or command to server
                 else if (consoleCommand != "")
                 {
@@ -761,7 +781,9 @@ namespace ArchipelagoHylics2
             //Logger.LogInfo("OnSceneLoaded: " + scene.name);
             currentScene = scene;
 
-            if (scene.name != "Battle Scene") checkedBattle = false;
+            if (scene.name == "Battle Scene") Invoke("RemoveViewaxLoot", 1f);
+
+            if (scene.name == "StartHouse_Room1") APState.ServerData.visited_waynehouse = true;
 
             // show a reminder that the player is not currently connected to a server every time a new area is loaded
             if (!cutscenes.Contains(scene.name) && !APState.Authenticated)
@@ -772,7 +794,7 @@ namespace ArchipelagoHylics2
             // load DeathScene if DeathLink was recieved during a cutscene
             if (!cutscenes.Contains(scene.name) && scene.name != "Battle Scene" && scene.name != "Afterlife_Island" && APState.Authenticated && APState.DeathLinkKilling)
             {
-                SceneManager.LoadScene("DeathScene", LoadSceneMode.Single);
+                SceneManager.LoadScene("DeathScene");
             }
 
             // send DeathLink to server when DeathScene is loaded if DeathLink is enabled
@@ -780,11 +802,11 @@ namespace ArchipelagoHylics2
             {
                 int random = new System.Random().Next(0, 4);
                 APState.DeathLinkService.SendDeathLink(new DeathLink(APState.ServerData.slot_name, APState.ServerData.slot_name + deathMessage[random]));
-                APState.message_log.Add(APState.ServerData.slot_name + deathMessage[random]);
+                APState.message_log.Add("<color=#FA8072FF>" + APState.ServerData.slot_name + deathMessage[random] + "</color>");
             }
 
             // set DeathLinkKilling to false if the player is not currently dying
-            if ((currentScene.name != "DeathScene") && APState.DeathLinkKilling) APState.DeathLinkKilling = false;
+            if ((currentScene.name == "Afterlife_Island") && APState.DeathLinkKilling) APState.DeathLinkKilling = false;
 
             // send victory to server after defeating Gibby
             if (scene.name == "HylemxylemExplode_Cutscene" && APState.Authenticated)
@@ -799,17 +821,41 @@ namespace ArchipelagoHylics2
             GameObject[] objectList = FindObjectsOfType<GameObject>();
             foreach (GameObject obj in objectList)
             {
+                // move airship if random start is enabled
+                if ((obj.name == "AirshipModel_Prefab" || obj.name == "AirshipModel_Prefab(Clone)") && APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse"
+                    && !ORK.Game.Variables.GetBool("AirshipEnteredNormallyAtLeastOnce"))
+                {
+                    if (APState.ServerData.start_location == "Viewax's Edifice")
+                    {
+                        obj.transform.SetPositionAndRotation(new Vector3(66.5159f, 6.2685f, -12.0272f), new Quaternion(0, 0.8808f, 0, 0.4734f));
+                    }
+                    else if (APState.ServerData.start_location == "TV Island")
+                    {
+                        obj.transform.SetPositionAndRotation(new Vector3(125.4f, 5.3839f, 121.033f), new Quaternion(0, 0.9849f, 0, -0.1729f));
+
+                    }
+                    else if (APState.ServerData.start_location == "Shield Facility")
+                    {
+                        obj.transform.SetPositionAndRotation(new Vector3(-116.3876f, 6.2785f, 45.9867f), new Quaternion(0, 0.9931f, 0, -0.1176f));
+                    }
+                }
+
                 // replace all items with nothing. recieved items are all remote
                 ItemCollector compIC = obj.GetComponent(typeof(ItemCollector)) as ItemCollector;
                 if (compIC != null)
                 {
                     compIC.showDialogue = false;
+
                     if (compIC.item[0].type != ItemDropType.Currency)
                     {
                         if (compIC.item[0].type == ItemDropType.Weapon || compIC.item[0].type == ItemDropType.Armor) compIC.item[0].type = ItemDropType.Item;
                         compIC.item[0].quantity = 0;
                     }
                     else if (compIC.item[0].type == ItemDropType.Currency && compIC.item[0].quantity >= 50)
+                    { 
+                        compIC.item[0].quantity = 0;
+                    }
+                    else if (compIC.item[0].type == ItemDropType.Currency && compIC.item[0].quantity == 10 && APState.ServerData.medallion_shuffle)
                     {
                         compIC.item[0].quantity = 0;
                     }
@@ -975,6 +1021,28 @@ namespace ArchipelagoHylics2
                             ei.eventAsset.GetData().SetXML(xml);
                             break;
 
+                        case "AfterlifeWarpChoice_Event": // Talk to guy in Afterlife next to pool
+                            if (APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
+                            {
+                                if (xml.Contains("Waynehouse"))
+                                {
+                                    xml = xml.Remove(xml.IndexOf("<1 next=\"3\""), xml.IndexOf("</1>", xml.IndexOf("<1 next=\"3\"")) + 4 - xml.IndexOf("<1 next=\"3\""));
+                                    ei.eventAsset.GetData().SetXML(xml);
+                                }
+                            }
+                            break;
+
+                        case "Afterlife_WarpPool_SceneChangerEvent": // Jump in pool in Afterlife
+                            if (APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
+                            {
+                                if (xml.Contains("StartHouse_Room1"))
+                                {
+                                    xml = xml.Replace("StartHouse_Room1", "Afterlife_Island");
+                                    ei.eventAsset.GetData().SetXML(xml);
+                                }
+                            }
+                            break;
+
                         default:
                             break;
                     }
@@ -1004,6 +1072,20 @@ namespace ArchipelagoHylics2
 
             // recieve missing items on loading a save file (if there are any)
             if (APState.Authenticated && (APState.ServerData.index < APState.Session.Items.Index)) StartCoroutine(LoadItems());
+        }
+
+        // remove Viewax's drops from battle
+        public void RemoveViewaxLoot()
+        {
+            GameObject[] objectList = FindObjectsOfType<GameObject>();
+            foreach (GameObject obj in objectList)
+            {
+                CombatantComponent enemy = obj.GetComponent(typeof(CombatantComponent)) as CombatantComponent;
+                if (enemy != null && obj.name == "Viewax")
+                {
+                    enemy.combatant.Setting.lootID = new int[0];
+                }
+            }
         }
 
         // recieve missing items when loading a previous save
@@ -1042,39 +1124,53 @@ namespace ArchipelagoHylics2
             GameObject[] objectList = FindObjectsOfType<GameObject>();
             foreach (GameObject obj in objectList)
             {
-                EventInteraction ei = obj.GetComponent(typeof(EventInteraction)) as EventInteraction;
-                if (ei != null)
+                if (APState.ServerData.party_shuffle)
                 {
-                    string xml = ei.eventAsset.GetData().GetXML();
-                    switch (ei.eventAsset.name)
+                    EventInteraction ei = obj.GetComponent(typeof(EventInteraction)) as EventInteraction;
+                    if (ei != null)
                     {
-                        case "PongormaJoinEvent":
-                            xml = xml.Replace("17 next=\"14\"", "17 next=\"2\"");
-                            xml = xml.Replace("3 next=\"6\"", "3 next=\"30\"");
-                            xml = xml.Replace("11 next=\"1\"", "11 next=\"-1\"");
-                            ei.eventAsset.GetData().SetXML(xml);
-                            break;
-                        case "Dedusmuln_Join_Event":
-                            xml = xml.Replace("6 next=\"24\"", "6 next=\"0\"");
-                            xml = xml.Replace("0 origin=\"1\" next=\"32\"", "0 origin=\"1\" next=\"26\"");
-                            ei.eventAsset.GetData().SetXML(xml);
-                            break;
-                        case "SomsnosaHouse_JoinBattle_Event":
-                            xml = xml.Replace("0 next=\"7\"", "0 next=\"15\"");
-                            ei.eventAsset.GetData().SetXML(xml);
-                            break;
-                        default:
-                            break;
+                        string xml = ei.eventAsset.GetData().GetXML();
+                        switch (ei.eventAsset.name)
+                        {
+                            case "PongormaJoinEvent":
+                                xml = xml.Replace("17 next=\"14\"", "17 next=\"2\"");
+                                xml = xml.Replace("3 next=\"6\"", "3 next=\"30\"");
+                                xml = xml.Replace("11 next=\"1\"", "11 next=\"-1\"");
+                                ei.eventAsset.GetData().SetXML(xml);
+                                break;
+                            case "Dedusmuln_Join_Event":
+                                xml = xml.Replace("6 next=\"24\"", "6 next=\"0\"");
+                                xml = xml.Replace("0 origin=\"1\" next=\"32\"", "0 origin=\"1\" next=\"26\"");
+                                ei.eventAsset.GetData().SetXML(xml);
+                                break;
+                            case "SomsnosaHouse_JoinBattle_Event":
+                                xml = xml.Replace("0 next=\"7\"", "0 next=\"15\"");
+                                ei.eventAsset.GetData().SetXML(xml);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    BattleComponent battle = obj.GetComponent(typeof(BattleComponent)) as BattleComponent;
+                    if (battle != null)
+                    {
+                        if (obj.name == "JoinBattle_Soms" && APState.ServerData.party_shuffle)
+                        {
+                            string xml = battle.defeatEventAsset.GetData().GetXML();
+                            xml = xml.Replace("9 next=\"8\"", "9 next=\"0\"");
+                            battle.defeatEventAsset.GetData().SetXML(xml);
+                        }
                     }
                 }
-                BattleComponent battle = obj.GetComponent(typeof(BattleComponent)) as BattleComponent;
-                if (battle != null)
+                if (APState.ServerData.medallion_shuffle)
                 {
-                    if (obj.name == "JoinBattle_Soms" && APState.ServerData.party_shuffle)
+                    ItemCollector compIC = obj.GetComponent(typeof(ItemCollector)) as ItemCollector;
+                    if (compIC != null)
                     {
-                        string xml = battle.defeatEventAsset.GetData().GetXML();
-                        xml = xml.Replace("9 next=\"8\"", "9 next=\"0\"");
-                        battle.defeatEventAsset.GetData().SetXML(xml);
+                        if (compIC.item[0].type == ItemDropType.Currency && compIC.item[0].quantity == 10)
+                        {
+                            compIC.item[0].quantity = 0;
+                        }
                     }
                 }
             }

@@ -78,7 +78,7 @@ namespace ArchipelagoHylics2
             {
                 if (location.HasValue)
                 {
-                    //Debug.Log(location.Value);
+                    Debug.Log("Sending location check: " + location.Value);
                     APState.Session.Locations.CompleteLocationChecks(location.Value);
                 }
             }
