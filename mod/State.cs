@@ -21,7 +21,7 @@ namespace ArchipelagoHylics2
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
         public static List<string> message_log = new List<string> { "Hylics 2 | Archipelago | " + APH2Plugin.PluginVersion,
-            "Available commands: <color=#00EEEEFF>/connect, /disconnect, /popups, /airship, /checked, /deathlink, /help</color>" };
+            "Available commands: <color=#00EEEEFF>/connect, /disconnect, /popups, /airship, /respawn, /checked, /deathlink, /help</color>" };
         public static bool Authenticated;
 
         public static ArchipelagoSession Session;
@@ -92,6 +92,12 @@ namespace ArchipelagoHylics2
                         ServerData.checked_drill_castle + ServerData.checked_sage_labyrinth + ServerData.checked_sage_airship + ServerData.checked_hylemxylem) == 0 
                         && ServerData.start_location != "Waynehouse")
                     {
+                        // remove mini crystal from inventory if random start is enabled and start location is not Waynehouse
+                        if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(15, 1)))
+                        {
+                            ORK.Game.ActiveGroup.Leader.Inventory.Remove(new ItemShortcut(15, 1), false, false);
+                        }
+
                         GameObject gameObject = new("Changer");
                         SceneChanger changer = gameObject.AddComponent<SceneChanger>();
                         SceneTarget target = new();

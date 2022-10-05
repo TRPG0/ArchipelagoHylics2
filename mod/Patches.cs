@@ -91,7 +91,6 @@ namespace ArchipelagoHylics2
     {
         public static void Postfix(EventInteraction __instance)
         {
-            //Debug.Log("EventEnded: " + __instance.eventAsset.name);
             switch (__instance.eventAsset.name)
             {
                 case "Learn_PoromericBleb_Event": // Waynehouse TV

@@ -350,7 +350,7 @@ namespace ArchipelagoHylics2
             consoleBG.Apply();
             consoleStyle.normal.background = consoleBG;
         }
-
+        
         void OnGUI()
         {
             // show the console on screen
@@ -717,7 +717,11 @@ namespace ArchipelagoHylics2
                                 break;
                             case "airship":
                                 APState.message_log.Add("<color=#00EEEEFF>/airship</color>");
-                                APState.message_log.Add("   Resets the airship's and Wayne's positions in case you get stuck. Cannot be used if you don't have DOCK KEY.");
+                                APState.message_log.Add("   Resets the airship's and Wayne's positions in World in case you get stuck. Cannot be used if you don't have DOCK KEY.");
+                                break;
+                            case "respawn":
+                                APState.message_log.Add("<color=#00EEEEFF>/respawn</color>");
+                                APState.message_log.Add("   Moves Wayne back to the spawn position of the current area in case you get stuck. <color=#00EEEEFF>/respawn home</color> will teleport Wayne back to his original starting position.");
                                 break;
                             case "checked":
                                 APState.message_log.Add("<color=#00EEEEFF>/checked</color> <color=#FAFAD2FF>[region]</color>");
@@ -728,7 +732,7 @@ namespace ArchipelagoHylics2
                                 APState.message_log.Add("   Enables or disables DeathLink.");
                                 break;
                             default:
-                                APState.message_log.Add("Unknown command. Available commands: <color=#00EEEEFF>/connect, /disconnect, /popups, /airship, /checked, /deathlink</color>");
+                                APState.message_log.Add("Unknown command. Available commands: <color=#00EEEEFF>/connect, /disconnect, /popups, /airship, /respawn, /checked, /deathlink</color>");
                                 break;
                         }
                     }
@@ -741,11 +745,81 @@ namespace ArchipelagoHylics2
                         APState.message_log.Add("<color=#00EEEEFF>/popups</color>");
                         APState.message_log.Add("   Enables or disables in-game messages when an item is found or recieved.");
                         APState.message_log.Add("<color=#00EEEEFF>/airship</color>");
-                        APState.message_log.Add("   Resets the airship's and Wayne's positions in case you get stuck. Cannot be used if you don't have DOCK KEY.");
+                        APState.message_log.Add("   Resets the airship's and Wayne's positions in World in case you get stuck. Cannot be used if you don't have DOCK KEY.");
+                        APState.message_log.Add("<color=#00EEEEFF>/respawn</color>");
+                        APState.message_log.Add("   Moves Wayne back to the spawn position of the current area in case you get stuck. <color=#00EEEEFF>/respawn home</color> will teleport Wayne back to his original starting position.");
                         APState.message_log.Add("<color=#00EEEEFF>/checked</color> <color=#FAFAD2FF>[region]</color>");
                         APState.message_log.Add("   States how many locations have been checked in a given <color=#FAFAD2FF>region.</color> If no region is given, then the player's <color=#FAFAD2FF>current location</color> will be used.");
                         APState.message_log.Add("<color=#00EEEEFF>/deathlink</color>");
                         APState.message_log.Add("   Enables or disables DeathLink.");
+                        consoleCommand = "";
+                    }
+                }
+                else if (consoleCommand.StartsWith("/respawn"))
+                {
+                    if (!cutscenes.Contains(currentScene.name) && currentScene.name != "Battle Scene" && currentScene.name != "LD44 Scene" && currentScene.name != "LD44_ChibiScene2_TheCarpetScene")
+                    {
+                        string command = null;
+                        if (consoleCommand.Contains(" "))
+                        {
+                            var array = consoleCommand.Split(new[] { ' ' }, 2);
+                            command = array[1];
+                        }
+
+                        GameObject gameObject = new("Changer");
+                        SceneChanger changer = gameObject.AddComponent<SceneChanger>();
+                        SceneTarget target = new();
+
+                        if (command == "home")
+                        {
+                            if (APState.ServerData.random_start && APState.ServerData.start_location == "Viewax's Edifice")
+                            {
+                                target.spawnID = 9;
+                                target.sceneName = "BanditFort_Scene";
+                                changer.target = new[] { target };
+                                changer.StartEvent(gameObject);
+                            }
+                            else if (APState.ServerData.random_start && APState.ServerData.start_location == "TV Island")
+                            {
+                                target.spawnID = 9;
+                                target.sceneName = "BigTV_Island_Scene";
+                                changer.target = new[] { target };
+                                changer.StartEvent(gameObject);
+                            }
+                            else if (APState.ServerData.random_start && APState.ServerData.start_location == "Shield Facility")
+                            {
+                                target.spawnID = 9;
+                                target.sceneName = "WormRoom_Scene";
+                                changer.target = new[] { target };
+                                changer.StartEvent(gameObject);
+                            }
+                            else
+                            {
+                                target.spawnID = 0;
+                                target.sceneName = "StartHouse_Room1";
+                                changer.target = new[] { target };
+                                changer.StartEvent(gameObject);
+                            }
+                            APState.message_log.Add("<color=#00FF7FFF>Success.</color> Teleporting to original starting position.");
+                        }
+                        else if (command != "home" && command != null)
+                        {
+                            APState.message_log.Add("Unknown argument. Type \"<color=#00EEEEFF>/respawn</color>\" to teleport to your last spawn position or " + 
+                                "\"<color=#00EEEEFF>/respawn home</color>\" to teleport to your original starting position.");
+                        }
+                        else
+                        {
+                            target.spawnID = 0;
+                            target.sceneName = currentScene.name;
+                            changer.target = new[] { target };
+                            changer.StartEvent(gameObject);
+                            APState.message_log.Add("<color=#00FF7FFF>Success.</color> Teleporting to default spawn position.");
+                        }
+                        consoleCommand = "";
+                    }
+                    else
+                    {
+                        APState.message_log.Add("<color=#FA8072FF>Denied.</color> Can't do that right now.");
                         consoleCommand = "";
                     }
                 }
