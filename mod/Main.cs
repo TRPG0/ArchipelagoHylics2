@@ -769,6 +769,7 @@ namespace ArchipelagoHylics2
                         GameObject gameObject = new("Changer");
                         SceneChanger changer = gameObject.AddComponent<SceneChanger>();
                         SceneTarget target = new();
+                        ORK.GlobalEvents.ClearGlobalEvents();
 
                         if (command == "home")
                         {
