@@ -477,8 +477,34 @@ namespace ArchipelagoHylics2
                             {
                                 if (obj.name == "AirshipModel_Prefab" || obj.name == "AirshipModel_Prefab(Clone)")
                                 {
-                                    obj.transform.SetPositionAndRotation(new Vector3(-23.71f, 16.225f, -57.12f), new Quaternion(0, 0.3827f, 0, 0.9239f));
-                                    ORK.Game.ActiveGroup.Leader.GameObject.transform.SetPositionAndRotation(new Vector3(-24.3298f, 16f, -57.7844f), ORK.Game.ActiveGroup.Leader.GameObject.transform.rotation);
+                                    Vector3 v3 = new(-23.71f, 16.225f, -52.12f);
+                                    Quaternion q = new(0, 0.3827f, 0, 0.9239f);
+                                    Vector3 w3 = new(-24.3298f, 16f, -57.7844f);
+
+                                    if (APState.ServerData.random_start)
+                                    {
+                                        if (APState.ServerData.start_location == "Viewax's Edifice")
+                                        {
+                                            v3 = new(66.5159f, 6.2685f, -12.0272f);
+                                            q = new(0, 0.8808f, 0, 0.4724f);
+                                            w3 = new(65.05f, 5.6f, -11.176f);
+                                        }
+                                        if (APState.ServerData.start_location == "TV Island")
+                                        {
+                                            v3 = new(125.4f, 5.3839f, 121.033f);
+                                            q = new(0, 0.9849f, 0, -0.1729f);
+                                            w3 = new(126.115f, 4.85f, 123.23f);
+                                        }
+                                        if (APState.ServerData.start_location == "Shield Facility")
+                                        {
+                                            v3 = new(-116.3876f, 6.2785f, 45.9867f);
+                                            q = new(0, 0.9931f, 0, -0.1176f);
+                                            w3 = new(-116.168f, 5.65f, 47.49f);
+                                        }
+                                    }
+
+                                    obj.transform.SetPositionAndRotation(v3, q);
+                                    ORK.Game.ActiveGroup.Leader.GameObject.transform.SetPositionAndRotation(w3, ORK.Game.ActiveGroup.Leader.GameObject.transform.rotation);
                                 }
                             }
                             APState.message_log.Add("<color=#00FF7FFF>Success.</color> Airship position has been reset. Teleported to airship.");
