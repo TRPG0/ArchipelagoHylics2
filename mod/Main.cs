@@ -19,7 +19,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.0.1";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -29,6 +29,10 @@ namespace ArchipelagoHylics2
         public static bool pauseControl;
         public static bool showPopups;
         private bool isConsoleOpen = false;
+        private int screenX;
+        private int screenY;
+        private int textH;
+        private int typeH;
         public string consoleHistory;
         public string consoleCommand = "/";
         GUIStyle consoleStyle = new();
@@ -280,6 +284,20 @@ namespace ArchipelagoHylics2
             {
                 if (!isConsoleOpen && currentScene.name != "StartScene")
                 {
+                    screenX = Screen.width;
+                    screenY = Screen.height;
+                    if (screenY > 1080)
+                    {
+                        textH = 400;
+                        typeH = 50;
+                        consoleStyle.fontSize = 26;
+                    }
+                    else
+                    {
+                        textH = 200;
+                        typeH = 25;
+                        consoleStyle.fontSize = 13;
+                    }
                     isConsoleOpen = true;
                     consoleCommand = "/";
                     if (pauseControl) ORK.Control.EnablePlayerControls(false);
@@ -359,9 +377,9 @@ namespace ArchipelagoHylics2
                 if (APState.message_log.Count >= 14) APState.message_log.RemoveAt(0);
                 var message_array = APState.message_log.ToArray();
                 consoleHistory = string.Join("\n", message_array);
-                GUI.Box(new Rect(0, 855, 1920, 200), consoleHistory, consoleStyle);
+                GUI.Box(new Rect(0, (screenY-(textH+typeH)), screenX, textH), consoleHistory, consoleStyle);
                 GUI.SetNextControlName("ConsoleInput");
-                consoleCommand = GUI.TextField(new Rect(0, 1055, 1920, 25), consoleCommand, consoleStyle);
+                consoleCommand = GUI.TextField(new Rect(0, (screenY-typeH), screenX, typeH), consoleCommand, consoleStyle);
             }
             // close console
             if (Event.current.isKey && Event.current.keyCode == KeyCode.Escape && GUI.GetNameOfFocusedControl() == "ConsoleInput")
