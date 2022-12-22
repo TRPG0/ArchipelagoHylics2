@@ -274,10 +274,13 @@ namespace ArchipelagoHylics2
                     break;
 
                 case "LearnSageSpell_Event": // Sage Airship TV
-                    if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200735);
-                    APState.ServerData.@checked.Add(200735);
-                    APState.ServerData.checked_sage_airship++;
-                    Debug.Log("Sending location check: 200735");
+                    if (ORK.Game.Variables.Check("SageTokenCounter", 3))
+                    {
+                        if (APState.Authenticated) APState.Session.Locations.CompleteLocationChecks(200735);
+                        APState.ServerData.@checked.Add(200735);
+                        APState.ServerData.checked_sage_airship++;
+                        Debug.Log("Sending location check: 200735");
+                    }
                     break;
 
                 default:
