@@ -19,7 +19,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.2";
+        public const string PluginVersion = "1.0.3";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -394,28 +394,39 @@ namespace ArchipelagoHylics2
                 if (consoleCommand.StartsWith("/connect"))
                 {
                     string[] key = consoleCommand.Split(' ');
-                    if (key.Length == 3)
+                    string name = null;
+                    string password = null;
+                    if (consoleCommand.Contains("\""))
                     {
-                        APState.ServerData.host_name = key[1];
-                        APState.ServerData.slot_name = key[2];
-                        APState.Connect();
-                        consoleCommand = "";
+                        name = consoleCommand.Substring(consoleCommand.IndexOf("\""), (consoleCommand.LastIndexOf("\"") - consoleCommand.IndexOf("\"")));
+                        name = name.Substring(1, name.Length - 1);
+                        if (!key[key.Length - 1].Contains("\""))
+                        {
+                            password = key[key.Length - 1];
+                        }
                     }
-                    else if (key.Length < 3)
+                    else
+                    {
+                        name = key[2];
+                    }
+                    
+                    if (key.Length < 3)
                     {
                         APState.message_log.Add("Not enough arguments. Command should follow the form of <color=#00EEEEFF>/connect [address:</color><color=#FAFAD2FF>port</color><color=#00EEEEFF>] [name]</color> <color=#FAFAD2FF>[password]</color>");
                         consoleCommand = "";
                     }
-                    else if (key.Length > 4)
+                    else if (password != null)
                     {
-                        APState.message_log.Add("Too many arguments. Command should follow the form of <color=#00EEEEFF>/connect [address:</color><color=#FAFAD2FF>port</color><color=#00EEEEFF>] [name]</color> <color=#FAFAD2FF>[password]</color>");
+                        APState.ServerData.host_name = key[1];
+                        APState.ServerData.slot_name = name;
+                        APState.ServerData.password = password;
+                        APState.Connect();
                         consoleCommand = "";
                     }
                     else
                     {
                         APState.ServerData.host_name = key[1];
-                        APState.ServerData.slot_name = key[2];
-                        APState.ServerData.password = key[3];
+                        APState.ServerData.slot_name = name;
                         APState.Connect();
                         consoleCommand = "";
                     }
