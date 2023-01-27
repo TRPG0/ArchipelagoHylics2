@@ -11,6 +11,7 @@ using System.IO;
 using Archipelago.MultiClient.Net.Packets;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using System;
+using System.Reflection;
 
 namespace ArchipelagoHylics2
 {
@@ -88,6 +89,18 @@ namespace ArchipelagoHylics2
             {
                 Logger.LogError("Couldn't parse config setting \"ShowPopups\". Default value of \"true\" will be used instead.");
                 showPopups = true;
+            }
+
+            bool foundEvents = true;
+            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Canoe.txt")) foundEvents = false;
+            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker1.txt")) foundEvents = false;
+            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker2.txt")) foundEvents = false;
+            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Viewax.txt")) foundEvents = false;
+
+            if (foundEvents == false)
+            {
+                Logger.LogError("Archipelago: Cannot find event data! Please ensure that the mod is installed correctly.");
+                APState.message_log.Add("<color=#FA8072FF>Cannot find event data! Please ensure that the mod is installed correctly.</color>");
             }
 
             harmony.PatchAll();
