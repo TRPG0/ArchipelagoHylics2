@@ -16,7 +16,7 @@ namespace ArchipelagoHylics2
     public static class APState
     {
 
-        public static int[] AP_VERSION = new int[] { 0, 3, 5 };
+        public static int[] AP_VERSION = new int[] { 0, 4, 0 };
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
@@ -237,12 +237,6 @@ namespace ArchipelagoHylics2
             //Debug.Log("Incoming Packet: " + packet.PacketType.ToString());
             switch (packet.PacketType)
             {
-                case ArchipelagoPacketType.Print:
-                    {
-                        var p = packet as PrintPacket;
-                        message_log.Add(p.Text);
-                        break;
-                    }
                 case ArchipelagoPacketType.PrintJSON:
                     {
                         var p = packet as PrintJsonPacket;
@@ -382,6 +376,8 @@ namespace ArchipelagoHylics2
                             return 200640;
                         case 84:
                             return 200641;
+                        // case 54:
+                            // return ???;
                         case 48:
                             if (ServerData.medallion_shuffle) return 200755;
                             else return null;

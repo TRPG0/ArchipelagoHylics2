@@ -20,7 +20,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.3";
+        public const string PluginVersion = "1.0.4";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -89,18 +89,6 @@ namespace ArchipelagoHylics2
             {
                 Logger.LogError("Couldn't parse config setting \"ShowPopups\". Default value of \"true\" will be used instead.");
                 showPopups = true;
-            }
-
-            bool foundEvents = true;
-            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Canoe.txt")) foundEvents = false;
-            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker1.txt")) foundEvents = false;
-            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker2.txt")) foundEvents = false;
-            if (!File.Exists(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Viewax.txt")) foundEvents = false;
-
-            if (foundEvents == false)
-            {
-                Logger.LogError("Archipelago: Cannot find event data! Please ensure that the mod is installed correctly.");
-                APState.message_log.Add("<color=#FA8072FF>Cannot find event data! Please ensure that the mod is installed correctly.</color>");
             }
 
             harmony.PatchAll();
@@ -1065,8 +1053,7 @@ namespace ArchipelagoHylics2
                             if (xml.Contains("IsBattleMemberStep"))
                             {
                                 xml = xml.Remove(xml.IndexOf("<0 id"), xml.IndexOf("</0>", xml.IndexOf("<0 id")) + 4 - xml.IndexOf("<0 id"));
-                                string insert1 = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Canoe.txt");
-                                xml = xml.Insert(xml.IndexOf("<1", xml.IndexOf("<step>")) - 1, insert1);
+                                xml = xml.Insert(xml.IndexOf("<1", xml.IndexOf("<step>")) - 1, Events.Canoe);
                                 ei.eventAsset.GetData().SetXML(xml);
                             }
                             break;
@@ -1133,10 +1120,8 @@ namespace ArchipelagoHylics2
                         case "ClickerSellerEvent": // Buy clicker from guy in Foglast
                             xml = xml.Remove(xml.IndexOf("<1 nextFail"), xml.IndexOf("</1>", xml.IndexOf("<1 nextFail")) + 4 - xml.IndexOf("<1 nextFail"));
                             xml = xml.Remove(xml.IndexOf("<3"), xml.IndexOf("</4>") + 4 - xml.IndexOf("<3"));
-                            string insert2 = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker1.txt");
-                            xml = xml.Insert(xml.IndexOf("<2") - 1, insert2);
-                            insert2 = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Clicker2.txt");
-                            xml = xml.Insert(xml.IndexOf("<5") - 1, insert2);
+                            xml = xml.Insert(xml.IndexOf("<2") - 1, Events.Clicker1);
+                            xml = xml.Insert(xml.IndexOf("<5") - 1, Events.Clicker2);
                             ei.eventAsset.GetData().SetXML(xml);
                             break;
 
@@ -1196,8 +1181,7 @@ namespace ArchipelagoHylics2
                     if (obj.name == "ThroneRoomNPCs") // add rewards back in to end of Viewax boss fight
                     {
                         string xml = battle.victoryEventAsset.GetData().GetXML();
-                        string insert = File.ReadAllText(Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\events\\Viewax.txt");
-                        xml = xml.Insert(xml.IndexOf("</9>") + 4, insert);
+                        xml = xml.Insert(xml.IndexOf("</9>") + 4, Events.Viewax);
                         xml = xml.Replace("2 next=\"4\"", "2 next=\"10\"");
                         battle.victoryEventAsset.GetData().SetXML(xml);
                     }

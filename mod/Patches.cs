@@ -326,7 +326,7 @@ namespace ArchipelagoHylics2
             if (APState.Authenticated)
             {
                 var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(APState.ServerData));
-                var path = Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\save\\archipelago" + index + ".json";
+                var path = Application.persistentDataPath + string.Format("/archipelago{0}.json", index);
                 File.WriteAllBytes(path, bytes);
             }
         }
@@ -340,7 +340,7 @@ namespace ArchipelagoHylics2
         {
             Debug.Log("Loaded file " + index);
 
-            var path = Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\ArchipelagoHylics2\\save\\archipelago" + index + ".json";
+            var path = Application.persistentDataPath + string.Format("/archipelago{0}.json", index);
 
             if (File.Exists(path))
             {
