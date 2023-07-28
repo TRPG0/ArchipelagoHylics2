@@ -16,7 +16,7 @@ namespace ArchipelagoHylics2
     public static class APState
     {
 
-        public static int[] AP_VERSION = new int[] { 0, 4, 0 };
+        public static int[] AP_VERSION = new int[] { 0, 4, 1 };
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
@@ -54,7 +54,7 @@ namespace ArchipelagoHylics2
                 ItemsHandlingFlags.AllItems,                
                 new Version(AP_VERSION[0], AP_VERSION[1], AP_VERSION[2]),
                 null,
-                "",
+                null,
                 ServerData.password == "" ? null : ServerData.password);
 
             if (loginResult is LoginSuccessful loginSuccess)
@@ -376,8 +376,8 @@ namespace ArchipelagoHylics2
                             return 200640;
                         case 84:
                             return 200641;
-                        // case 54:
-                            // return ???;
+                        case 54:
+                            return 200785;
                         case 48:
                             if (ServerData.medallion_shuffle) return 200755;
                             else return null;

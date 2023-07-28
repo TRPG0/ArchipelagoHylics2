@@ -4,7 +4,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>ArchipelagoHylics2</AssemblyName>
     <Description>Connect to an Archipelago server to play Hylics 2 Randomizer.</Description>
-    <Version>1.0.0</Version>
+    <Version>1.0.5</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <PlatformTarget>x86</PlatformTarget>
@@ -23,16 +23,16 @@
 		<Reference Include="Archipelago.MultiClient.Net">
 			<HintPath>lib\Archipelago.MultiClient.Net.dll</HintPath>
 		</Reference>
-		<Reference Include="websocket-sharp">
-			<HintPath>lib\websocket-sharp.dll</HintPath>
-		</Reference>
 		<Reference Include="Newtonsoft.Json">
 			<HintPath>lib\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="websocket-sharp">
+			<HintPath>lib\websocket-sharp.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archipelago.MultiClient.Net" Version="5.0.3" />
+    <PackageReference Include="Archipelago.MultiClient.Net" Version="5.0.6" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />

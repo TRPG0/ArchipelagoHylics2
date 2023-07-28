@@ -7,11 +7,9 @@ using ORKFramework;
 using ORKFramework.Behaviours;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using Archipelago.MultiClient.Net.Packets;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using System;
-using System.Reflection;
 
 namespace ArchipelagoHylics2
 {
@@ -20,7 +18,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.4";
+        public const string PluginVersion = "1.0.5";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -596,22 +594,22 @@ namespace ArchipelagoHylics2
                         case "new muldul vault":
                             if (APState.ServerData.party_shuffle && APState.ServerData.medallion_shuffle)
                             {
-                                total = 12;
+                                total = 13;
                                 total2 = 12;
                             }
                             else if (APState.ServerData.medallion_shuffle)
                             {
-                                total = 12;
+                                total = 13;
                                 total2 = 11;
                             }
                             else if (APState.ServerData.party_shuffle)
                             {
-                                total = 11;
+                                total = 12;
                                 total2 = 17;
                             }
                             else
                             {
-                                total = 11;
+                                total = 12;
                                 total2 = 6;
                             }
                             APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_new_muldul.ToString() +
@@ -940,9 +938,6 @@ namespace ArchipelagoHylics2
             // send victory to server after defeating Gibby
             if (scene.name == "HylemxylemExplode_Cutscene" && APState.Authenticated)
             {
-                long win = APState.Session.Locations.GetLocationIdFromName("Hylics 2", "Defeat Gibby");
-                //Logger.LogInfo("win location: " + win);
-                APState.Session.Locations.CompleteLocationChecks(win);
                 APState.send_completion();
             }
 
