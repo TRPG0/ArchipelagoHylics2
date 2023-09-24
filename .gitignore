@@ -5,6 +5,5 @@ xml/
 *.save
 *.pdb
 *.Config
-mod/lib/ORKFramework.dll
-mod/lib/ORKFrameworkCore.dll
-mod/lib/Assembly-CSharp.dll
+mod/lib/
+

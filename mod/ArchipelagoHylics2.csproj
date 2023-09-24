@@ -4,32 +4,11 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>ArchipelagoHylics2</AssemblyName>
     <Description>Connect to an Archipelago server to play Hylics 2 Randomizer.</Description>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-
-	<ItemGroup>
-		<Reference Include="Assembly-CSharp">
-			<HintPath>lib\Assembly-CSharp.dll</HintPath>
-		</Reference>
-		<Reference Include="ORKFramework">
-			<HintPath>lib\ORKFramework.dll</HintPath>
-		</Reference>
-		<Reference Include="ORKFrameworkCore">
-			<HintPath>lib\ORKFrameworkCore.dll</HintPath>
-		</Reference>
-		<Reference Include="Archipelago.MultiClient.Net">
-			<HintPath>lib\Archipelago.MultiClient.Net.dll</HintPath>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<HintPath>lib\Newtonsoft.Json.dll</HintPath>
-		</Reference>
-		<Reference Include="websocket-sharp">
-			<HintPath>lib\websocket-sharp.dll</HintPath>
-		</Reference>
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Archipelago.MultiClient.Net" Version="5.0.6" />
@@ -41,5 +20,20 @@
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>lib\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ORKFramework">
+      <HintPath>lib\ORKFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="ORKFrameworkCore">
+      <HintPath>lib\ORKFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="websocket-sharp">
+      <HintPath>lib\websocket-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

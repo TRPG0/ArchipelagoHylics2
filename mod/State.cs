@@ -16,7 +16,7 @@ namespace ArchipelagoHylics2
     public static class APState
     {
 
-        public static int[] AP_VERSION = new int[] { 0, 4, 1 };
+        public static int[] AP_VERSION = new int[] { 0, 4, 3 };
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
@@ -633,6 +633,10 @@ namespace ArchipelagoHylics2
                             return 200754;
                         case 4:
                             return 200725;
+                        case 11:
+                            return 200786;
+                        case 12:
+                            return 200787;
                         default:
                             return null;
                     }

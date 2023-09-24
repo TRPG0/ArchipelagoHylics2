@@ -18,7 +18,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.5";
+        public const string PluginVersion = "1.0.6";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -704,7 +704,7 @@ namespace ArchipelagoHylics2
                         case "sage maze":
                         case "skull bomb maze":
                         case "skull bomb labyrinth":
-                            total = 20;
+                            total = 22;
                             APState.message_log.Add("You have checked <color=#00FF7FFF>" + APState.ServerData.checked_sage_labyrinth.ToString() + "</color>/" + total.ToString() + 
                                 " locations in the <color=#00FF7FFF>Sage Labyrinth.</color>");
                             break;
