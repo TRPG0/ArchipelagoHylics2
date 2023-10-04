@@ -912,22 +912,12 @@ namespace ArchipelagoHylics2
 
             if (scene.name == "StartHouse_Room1") APState.ServerData.visited_waynehouse = true;
 
+            Invoke("CheckKeyItems", 1f);
+
             // show a reminder that the player is not currently connected to a server every time a new area is loaded
             if (!cutscenes.Contains(scene.name) && !APState.Authenticated)
             {
                 queueMessage.Add("Not currently connected to an Archipelago server.");
-            }
-
-            // failsafe when pneumatophore is received without setting flag correctly
-            if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(14, 1)) && !ORK.Game.Variables.GetBool("AirDashBool"))
-            {
-                ORK.Game.Variables.Set("AirDashBool", true);
-            }
-
-            // failsafe when dock key is received without airship manual
-            if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(23, 1)) && !ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(37, 1)))
-            {
-                ORK.Game.ActiveGroup.Leader.Inventory.Add(new ItemShortcut(37, 1), false, false, false);
             }
 
             // load DeathScene if DeathLink was recieved during a cutscene
@@ -1305,6 +1295,23 @@ namespace ArchipelagoHylics2
                         }
                     }
                 }
+            }
+        }
+
+        public static void CheckKeyItems()
+        {
+            if (ORK.Game.ActiveGroup.Leader == null) return;
+
+            // failsafe when pneumatophore is received without setting flag correctly
+            if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(14, 1)) && !ORK.Game.Variables.GetBool("AirDashBool"))
+            {
+                ORK.Game.Variables.Set("AirDashBool", true);
+            }
+
+            // failsafe when dock key is received without airship manual
+            if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(23, 1)) && !ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(37, 1)))
+            {
+                ORK.Game.ActiveGroup.Leader.Inventory.Add(new ItemShortcut(37, 1), false, false, false);
             }
         }
     }
