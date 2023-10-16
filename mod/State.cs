@@ -32,21 +32,13 @@ namespace ArchipelagoHylics2
             {
                 return true;
             }
-            var url = ServerData.host_name;
-            int port = 38281;
-            
-            if (url.Contains(":"))
-            {
-                var splits = url.Split(new char[] { ':' });
-                url = splits[0];
-                if (!int.TryParse(splits[1], out port)) port = 38281;
-            }
-
-            Session = ArchipelagoSessionFactory.CreateSession(url, port);
-            Session.Socket.PacketReceived += Session_PacketRecieved;
-            Session.Socket.ErrorReceived += Session_ErrorRecieved;
+            Session = ArchipelagoSessionFactory.CreateSession(ServerData.host_name);
+            Session.Socket.PacketReceived += Session_PacketReceived;
+            Session.Socket.ErrorReceived += Session_ErrorReceived;
             Session.Socket.SocketClosed += Session_SocketClosed;
             Session.Items.ItemReceived += Session_ItemRecieved;
+
+            Debug.Log(Session.ToString());
 
             LoginResult loginResult = Session.TryConnectAndLogin(
                 "Hylics 2",
@@ -56,6 +48,8 @@ namespace ArchipelagoHylics2
                 null,
                 null,
                 ServerData.password == "" ? null : ServerData.password);
+
+            Debug.Log(Session.ToString());
 
             if (loginResult is LoginSuccessful loginSuccess)
             {
@@ -196,11 +190,11 @@ namespace ArchipelagoHylics2
             Disconnect();
         }
 
-        public static void Session_ErrorRecieved(Exception e, string message)
+        public static void Session_ErrorReceived(Exception e, string message)
         {
             Debug.LogError(message);
             if (e != null) Debug.LogError(e.ToString());
-            Disconnect();
+            //Disconnect();
         }
 
         public static void Disconnect()
@@ -210,6 +204,7 @@ namespace ArchipelagoHylics2
                 Session.Socket.Disconnect();
             }
             Session = null;
+            DeathLinkService = null;
             Authenticated = false;
         }
 
@@ -232,7 +227,7 @@ namespace ArchipelagoHylics2
             }
         }
 
-        public static void Session_PacketRecieved(ArchipelagoPacketBase packet)
+        public static void Session_PacketReceived(ArchipelagoPacketBase packet)
         {
             //Debug.Log("Incoming Packet: " + packet.PacketType.ToString());
             switch (packet.PacketType)

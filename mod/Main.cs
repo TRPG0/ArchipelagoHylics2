@@ -18,7 +18,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.7";
+        public const string PluginVersion = "1.0.8";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -912,7 +912,7 @@ namespace ArchipelagoHylics2
 
             if (scene.name == "StartHouse_Room1") APState.ServerData.visited_waynehouse = true;
 
-            Invoke("CheckKeyItems", 1f);
+            Invoke("CheckKeyItems", 2f);
 
             // show a reminder that the player is not currently connected to a server every time a new area is loaded
             if (!cutscenes.Contains(scene.name) && !APState.Authenticated)
@@ -1298,7 +1298,7 @@ namespace ArchipelagoHylics2
             }
         }
 
-        public static void CheckKeyItems()
+        public void CheckKeyItems()
         {
             if (ORK.Game.ActiveGroup.Leader == null) return;
 
