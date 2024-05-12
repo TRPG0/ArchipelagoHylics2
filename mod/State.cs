@@ -74,52 +74,47 @@ namespace ArchipelagoHylics2
                         APH2Plugin.ReloadEvents();
                     }
                 }
-                if (loginSuccess.SlotData["random_start"].ToString() == "1")
+                ServerData.start_location = loginSuccess.SlotData["start_location"].ToString();
+                if ((ServerData.checked_waynehouse + ServerData.checked_afterlife + ServerData.checked_new_muldul + ServerData.checked_new_muldul_vault + 
+                    ServerData.checked_pongorma + ServerData.checked_blerol1 + ServerData.checked_blerol2 + ServerData.checked_viewaxs_edifice + 
+                    ServerData.checked_arcade1 + ServerData.checked_airship + ServerData.checked_arcade_island + ServerData.checked_arcade2 + 
+                    ServerData.checked_tv_island + ServerData.checked_juice_ranch + ServerData.checked_worm_pod + ServerData.checked_foglast + 
+                    ServerData.checked_drill_castle + ServerData.checked_sage_labyrinth + ServerData.checked_sage_airship + ServerData.checked_hylemxylem) == 0
+                    && ServerData.start_location != "Waynehouse")
                 {
-                    ServerData.random_start = true;
-                    ServerData.start_location = loginSuccess.SlotData["start_location"].ToString();
-
-                    if ((ServerData.checked_waynehouse + ServerData.checked_afterlife + ServerData.checked_new_muldul + ServerData.checked_new_muldul_vault + 
-                        ServerData.checked_pongorma + ServerData.checked_blerol1 + ServerData.checked_blerol2 + ServerData.checked_viewaxs_edifice + 
-                        ServerData.checked_arcade1 + ServerData.checked_airship + ServerData.checked_arcade_island + ServerData.checked_arcade2 + 
-                        ServerData.checked_tv_island + ServerData.checked_juice_ranch + ServerData.checked_worm_pod + ServerData.checked_foglast + 
-                        ServerData.checked_drill_castle + ServerData.checked_sage_labyrinth + ServerData.checked_sage_airship + ServerData.checked_hylemxylem) == 0 
-                        && ServerData.start_location != "Waynehouse")
+                    // remove mini crystal from inventory if random start is enabled and start location is not Waynehouse
+                    if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(15, 1)))
                     {
-                        // remove mini crystal from inventory if random start is enabled and start location is not Waynehouse
-                        if (ORK.Game.ActiveGroup.Leader.Inventory.Has(new ItemShortcut(15, 1)))
-                        {
-                            ORK.Game.ActiveGroup.Leader.Inventory.Remove(new ItemShortcut(15, 1), false, false);
-                        }
-
-                        GameObject gameObject = new("Changer");
-                        SceneChanger changer = gameObject.AddComponent<SceneChanger>();
-                        SceneTarget target = new();
-                        target.spawnID = 9;
-
-                        if (ServerData.start_location == "Viewax's Edifice")
-                        {
-                            ORK.Game.Variables.Set("Warp3_Fort", true);
-                            target.sceneName = "BanditFort_Scene";
-                            changer.target = new[] { target };
-                            changer.StartEvent(gameObject);
-                        }
-                        else if (ServerData.start_location == "TV Island")
-                        {
-                            ORK.Game.Variables.Set("Warp60_BigTV", true);
-                            target.sceneName = "BigTV_Island_Scene";
-                            changer.target = new[] { target };
-                            changer.StartEvent(gameObject);
-                        }
-                        else if (ServerData.start_location == "Shield Facility")
-                        {
-                            ORK.Game.Variables.Set("Warp100_WormHouse", true);
-                            target.sceneName = "WormRoom_Scene";
-                            changer.target = new[] { target };
-                            changer.StartEvent(gameObject);
-                        }
-                        ServerData.visited_waynehouse = false;
+                        ORK.Game.ActiveGroup.Leader.Inventory.Remove(new ItemShortcut(15, 1), false, false);
                     }
+
+                    GameObject gameObject = new("Changer");
+                    SceneChanger changer = gameObject.AddComponent<SceneChanger>();
+                    SceneTarget target = new();
+                    target.spawnID = 9;
+
+                    if (ServerData.start_location == "Viewax's Edifice")
+                    {
+                        ORK.Game.Variables.Set("Warp3_Fort", true);
+                        target.sceneName = "BanditFort_Scene";
+                        changer.target = new[] { target };
+                        changer.StartEvent(gameObject);
+                    }
+                    else if (ServerData.start_location == "TV Island")
+                    {
+                        ORK.Game.Variables.Set("Warp60_BigTV", true);
+                        target.sceneName = "BigTV_Island_Scene";
+                        changer.target = new[] { target };
+                        changer.StartEvent(gameObject);
+                    }
+                    else if (ServerData.start_location == "Shield Facility")
+                    {
+                        ORK.Game.Variables.Set("Warp100_WormHouse", true);
+                        target.sceneName = "WormRoom_Scene";
+                        changer.target = new[] { target };
+                        changer.StartEvent(gameObject);
+                    }
+                    ServerData.visited_waynehouse = false;
                 }
                 if (loginSuccess.SlotData["death_link"].ToString() == "1") ServerData.death_link = true;
                 set_deathlink();

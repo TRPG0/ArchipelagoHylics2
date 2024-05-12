@@ -18,7 +18,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.8";
+        public const string PluginVersion = "1.0.9";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -509,26 +509,23 @@ namespace ArchipelagoHylics2
                                     Quaternion q = new(0, 0.3827f, 0, 0.9239f);
                                     Vector3 w3 = new(-24.3298f, 16f, -57.7844f);
 
-                                    if (APState.ServerData.random_start)
+                                    if (APState.ServerData.start_location == "Viewax's Edifice")
                                     {
-                                        if (APState.ServerData.start_location == "Viewax's Edifice")
-                                        {
-                                            v3 = new(66.5159f, 6.2685f, -12.0272f);
-                                            q = new(0, 0.8808f, 0, 0.4724f);
-                                            w3 = new(65.05f, 5.6f, -11.176f);
-                                        }
-                                        if (APState.ServerData.start_location == "TV Island")
-                                        {
-                                            v3 = new(125.4f, 5.3839f, 121.033f);
-                                            q = new(0, 0.9849f, 0, -0.1729f);
-                                            w3 = new(126.115f, 4.85f, 123.23f);
-                                        }
-                                        if (APState.ServerData.start_location == "Shield Facility")
-                                        {
-                                            v3 = new(-116.3876f, 6.2785f, 45.9867f);
-                                            q = new(0, 0.9931f, 0, -0.1176f);
-                                            w3 = new(-116.168f, 5.65f, 47.49f);
-                                        }
+                                        v3 = new(66.5159f, 6.2685f, -12.0272f);
+                                        q = new(0, 0.8808f, 0, 0.4724f);
+                                        w3 = new(65.05f, 5.6f, -11.176f);
+                                    }
+                                    if (APState.ServerData.start_location == "TV Island")
+                                    {
+                                        v3 = new(125.4f, 5.3839f, 121.033f);
+                                        q = new(0, 0.9849f, 0, -0.1729f);
+                                        w3 = new(126.115f, 4.85f, 123.23f);
+                                    }
+                                    if (APState.ServerData.start_location == "Shield Facility")
+                                    {
+                                        v3 = new(-116.3876f, 6.2785f, 45.9867f);
+                                        q = new(0, 0.9931f, 0, -0.1176f);
+                                        w3 = new(-116.168f, 5.65f, 47.49f);
                                     }
 
                                     obj.transform.SetPositionAndRotation(v3, q);
@@ -827,28 +824,28 @@ namespace ArchipelagoHylics2
 
                         if (command == "home")
                         {
-                            if (APState.ServerData.random_start && APState.ServerData.start_location == "Viewax's Edifice")
+                            if (APState.ServerData.start_location == "Viewax's Edifice")
                             {
                                 target.spawnID = 9;
                                 target.sceneName = "BanditFort_Scene";
                                 changer.target = new[] { target };
                                 changer.StartEvent(gameObject);
                             }
-                            else if (APState.ServerData.random_start && APState.ServerData.start_location == "TV Island")
+                            else if (APState.ServerData.start_location == "TV Island")
                             {
                                 target.spawnID = 9;
                                 target.sceneName = "BigTV_Island_Scene";
                                 changer.target = new[] { target };
                                 changer.StartEvent(gameObject);
                             }
-                            else if (APState.ServerData.random_start && APState.ServerData.start_location == "Shield Facility")
+                            else if (APState.ServerData.start_location == "Shield Facility")
                             {
                                 target.spawnID = 9;
                                 target.sceneName = "WormRoom_Scene";
                                 changer.target = new[] { target };
                                 changer.StartEvent(gameObject);
                             }
-                            else
+                            else if (APState.ServerData.start_location == "Waynehouse")
                             {
                                 target.spawnID = 0;
                                 target.sceneName = "StartHouse_Room1";
@@ -948,7 +945,7 @@ namespace ArchipelagoHylics2
             foreach (GameObject obj in objectList)
             {
                 // move airship if random start is enabled
-                if ((obj.name == "AirshipModel_Prefab" || obj.name == "AirshipModel_Prefab(Clone)") && APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse"
+                if ((obj.name == "AirshipModel_Prefab" || obj.name == "AirshipModel_Prefab(Clone)") && APState.ServerData.start_location != "Waynehouse"
                     && !ORK.Game.Variables.GetBool("AirshipEnteredNormallyAtLeastOnce"))
                 {
                     if (APState.ServerData.start_location == "Viewax's Edifice")
@@ -1145,7 +1142,7 @@ namespace ArchipelagoHylics2
                             break;
 
                         case "AfterlifeWarpChoice_Event": // Talk to guy in Afterlife next to pool
-                            if (APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
+                            if (APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
                             {
                                 if (xml.Contains("Waynehouse"))
                                 {
@@ -1156,7 +1153,7 @@ namespace ArchipelagoHylics2
                             break;
 
                         case "Afterlife_WarpPool_SceneChangerEvent": // Jump in pool in Afterlife
-                            if (APState.ServerData.random_start && APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
+                            if (APState.ServerData.start_location != "Waynehouse" && !APState.ServerData.visited_waynehouse)
                             {
                                 if (xml.Contains("StartHouse_Room1"))
                                 {

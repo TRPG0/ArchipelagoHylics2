@@ -10,7 +10,6 @@ namespace ArchipelagoHylics2
         public string password;
         public bool party_shuffle = false;
         public bool medallion_shuffle = false;
-        public bool random_start = false;
         public string start_location = "?";
         public bool visited_waynehouse = false;
         public bool death_link = false;
