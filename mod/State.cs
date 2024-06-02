@@ -10,6 +10,7 @@ using ORKFramework;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using ORKFramework.Behaviours;
+using Archipelago.MultiClient.Net.Models;
 
 namespace ArchipelagoHylics2
 {
@@ -122,7 +123,7 @@ namespace ArchipelagoHylics2
                     }
                 }
                 if (loginSuccess.SlotData["death_link"].ToString() == "1") ServerData.death_link = true;
-                set_deathlink();
+                SetDeathlink();
 
                 // send any location checks that may have been completed while disconnected
                 if (ServerData.@checked != null)
@@ -148,9 +149,10 @@ namespace ArchipelagoHylics2
 
             if (helper.Index !> ServerData.index)
             {
-                string type = IdentifyItemGetType(helper.PeekItemName());
-                string name = helper.PeekItemName();
-                string player = Session.Players.GetPlayerName(helper.PeekItem().Player);
+                ItemInfo info = helper.PeekItem();
+                string type = IdentifyItemGetType(info.ItemName);
+                string name = info.ItemName;
+                string player = Session.Players.GetPlayerName(info.Player);
                 bool self = false;
 
                 if (player == ServerData.slot_name) self = true;
@@ -241,7 +243,11 @@ namespace ArchipelagoHylics2
                         // setup in-game message if a location has an item for a different player
                         if (p.Data[0].Type == JsonMessagePartType.PlayerId && Session.Players.GetPlayerName(int.Parse(p.Data[0].Text)) == ServerData.slot_name && p.Data[1].Text == " sent " && APH2Plugin.showPopups)
                         {
-                            APH2Plugin.queueMessage.Add("Found " + Session.Items.GetItemName(long.Parse(p.Data[2].Text)) + " for " + Session.Players.GetPlayerAlias(int.Parse(p.Data[4].Text)) + ".");
+                            APH2Plugin.queueMessage.Add("Found " 
+                                + Session.Items.GetItemName(long.Parse(p.Data[2].Text), Session.Players.GetPlayerInfo(p.Data[2].Player.Value).Game) 
+                                + " for " 
+                                + Session.Players.GetPlayerAlias(int.Parse(p.Data[4].Text)) 
+                                + ".");
                         }
 
                         foreach (var messagePart in p.Data)
@@ -293,7 +299,7 @@ namespace ArchipelagoHylics2
             }
         }
 
-        public static void set_deathlink()
+        public static void SetDeathlink()
         {
             if (DeathLinkService == null)
             {
@@ -310,11 +316,9 @@ namespace ArchipelagoHylics2
             }
         }
 
-        public static void send_completion()
+        public static void SendCompletion()
         {
-            var statusUpdatePacket = new StatusUpdatePacket();
-            statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
-            Session.Socket.SendPacket(statusUpdatePacket);
+            Session.SetGoalAchieved();
         }
 
         // get IDs for server locations based on the activated ItemCollector's scene and ID

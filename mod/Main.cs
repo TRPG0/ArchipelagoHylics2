@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Archipelago.MultiClient.Net.Packets;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using System;
+using Archipelago.MultiClient.Net.Models;
+using Color = UnityEngine.Color;
 
 namespace ArchipelagoHylics2
 {
@@ -18,7 +20,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.8";
+        public const string PluginVersion = "1.0.9";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 
@@ -551,7 +553,7 @@ namespace ArchipelagoHylics2
                     else
                     {
                         APState.ServerData.death_link = !APState.ServerData.death_link;
-                        APState.set_deathlink();
+                        APState.SetDeathlink();
 
                         if (APState.ServerData.death_link) APState.message_log.Add("DeathLink is now <color=#00FF7FFF>enabled.</color>");
                         else APState.message_log.Add("DeathLink is now <color=#FA8072FF>disabled.</color>");
@@ -888,10 +890,7 @@ namespace ArchipelagoHylics2
                     }
                     else
                     {
-                        string text = consoleCommand;
-                        var packet = new SayPacket();
-                        packet.Text = text;
-                        APState.Session.Socket.SendPacket(packet);
+                        APState.Session.Say(consoleCommand);
                         consoleCommand = "";
                     }
                 }
@@ -940,7 +939,7 @@ namespace ArchipelagoHylics2
             // send victory to server after defeating Gibby
             if (scene.name == "HylemxylemExplode_Cutscene" && APState.Authenticated)
             {
-                APState.send_completion();
+                APState.SendCompletion();
             }
 
             // find and modify all necessary GameObjects
@@ -1216,8 +1215,8 @@ namespace ArchipelagoHylics2
             yield return new WaitForSecondsRealtime(2f);
             while (APState.ServerData.index < APState.Session.Items.Index)
             {
-                var item = APState.Session.Items.AllItemsReceived[Convert.ToInt32(APState.ServerData.index)];
-                string name = APState.Session.Items.GetItemName(item.Item);
+                ItemInfo item = APState.Session.Items.AllItemsReceived[Convert.ToInt32(APState.ServerData.index)];
+                string name = item.ItemName;
                 string type = APState.IdentifyItemGetType(name);
                 string player = APState.Session.Players.GetPlayerName(item.Player);
                 bool self = false;
