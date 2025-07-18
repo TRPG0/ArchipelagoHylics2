@@ -7,7 +7,6 @@ using ORKFramework;
 using ORKFramework.Behaviours;
 using System.Collections;
 using System.Collections.Generic;
-using Archipelago.MultiClient.Net.Packets;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using System;
 using Archipelago.MultiClient.Net.Models;
@@ -20,7 +19,7 @@ namespace ArchipelagoHylics2
     {
         public const string PluginGUID = "com.trpg.ArchipelagoHylics2";
         public const string PluginName = "ArchipelagoHylics2";
-        public const string PluginVersion = "1.0.9";
+        public const string PluginVersion = "1.0.10";
 
         public static Harmony harmony = new("mod.ArchipelagoHylics2");
 

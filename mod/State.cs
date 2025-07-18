@@ -17,7 +17,7 @@ namespace ArchipelagoHylics2
     public static class APState
     {
 
-        public static int[] AP_VERSION = new int[] { 0, 4, 3 };
+        public static Version AP_VERSION = new Version(0, 6, 2);
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
@@ -45,7 +45,7 @@ namespace ArchipelagoHylics2
                 "Hylics 2",
                 ServerData.slot_name,
                 ItemsHandlingFlags.AllItems,                
-                new Version(AP_VERSION[0], AP_VERSION[1], AP_VERSION[2]),
+                AP_VERSION,
                 null,
                 null,
                 ServerData.password == "" ? null : ServerData.password);
@@ -124,7 +124,6 @@ namespace ArchipelagoHylics2
                 }
                 if (loginSuccess.SlotData["death_link"].ToString() == "1") ServerData.death_link = true;
                 SetDeathlink();
-
                 // send any location checks that may have been completed while disconnected
                 if (ServerData.@checked != null)
                 {
