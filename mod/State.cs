@@ -17,7 +17,7 @@ namespace ArchipelagoHylics2
     public static class APState
     {
 
-        public static Version AP_VERSION = new Version(0, 6, 2);
+        public static Version AP_VERSION = new Version(0, 6, 6);
         public static APData ServerData = new();
         public static DeathLinkService DeathLinkService = null;
         public static bool DeathLinkKilling = false; // indicates player is currently being deathlinked
